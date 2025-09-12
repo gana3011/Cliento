@@ -16,8 +16,7 @@ const BuyerForm = () => {
       console.log(res.data);
     } catch(err){
       console.error(err);
-    }
-    
+    } 
   };
 
   return (
@@ -96,9 +95,9 @@ const BuyerForm = () => {
 
           <Form.Item name="timeline" label="Timeline">
             <Select placeholder="Select timeline">
-              <Option value="0-3m">0-3 months</Option>
-              <Option value="3-6m">3-6 months</Option>
-              <Option value=">6m">6+ months</Option>
+              <Option value="ZERO-3m">0-3 months</Option>
+              <Option value="THREE_6M">3-6 months</Option>
+              <Option value="GT_6M">6+ months</Option>
               <Option value="Exploring">Exploring</Option>
             </Select>
           </Form.Item>

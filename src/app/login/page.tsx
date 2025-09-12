@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '../lib/supabase/supabaseClient';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -12,7 +12,7 @@ export default function LoginPage() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/magic-callback`,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     });
 
