@@ -1,38 +1,45 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Button, Form, Input, Select, InputNumber, Row, Col } from 'antd';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Button, Form, Input, Select, InputNumber, Row, Col } from "antd";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const { Option } = Select;
 
 const BuyerForm = () => {
-  const [form] = Form.useForm();
-  const [propertyType, setPropertyType] = useState<string | undefined>(undefined);
+  const router = useRouter();
 
-  const onFinish = async(values: any) => {
-    try{
-      const res = await axios.post('/api/buyers/new', values);
+  const [form] = Form.useForm();
+  const [propertyType, setPropertyType] = useState<string | undefined>(
+    undefined
+  );
+
+  const onFinish = async (values: any) => {
+    try {
+      const res = await axios.post("/api/buyers/new", values);
       console.log(res.data);
-    } catch(err){
+      form.resetFields();
+      router.replace('/buyers');
+    } catch (err) {
       console.error(err);
-    } 
+    }
   };
 
   return (
-    <Form
-      layout="vertical"
-      form={form}
-      onFinish={onFinish}
-    >
+    <Form layout="vertical" form={form} onFinish={onFinish}>
       <Row gutter={16}>
         {/* Left Column */}
         <Col span={12}>
-          <Form.Item name="fullName" label="Full Name" rules={[{ required: true }]}>
+          <Form.Item
+            name="fullName"
+            label="Full Name"
+            rules={[{ required: true }]}
+          >
             <Input placeholder="Enter full name" />
           </Form.Item>
 
-          <Form.Item name="email" label="Email" rules={[{ type: 'email' }]}>
+          <Form.Item name="email" label="Email" rules={[{ type: "email" }]}>
             <Input placeholder="Enter email" />
           </Form.Item>
 
@@ -55,7 +62,7 @@ const BuyerForm = () => {
             </Select>
           </Form.Item>
 
-          {(propertyType === 'Apartment' || propertyType === 'Villa') && (
+          {(propertyType === "Apartment" || propertyType === "Villa") && (
             <Form.Item name="bhk" label="BHK">
               <Select placeholder="Select BHK">
                 <Option value="BHK1">1 BHK</Option>
@@ -81,13 +88,15 @@ const BuyerForm = () => {
             <Row gutter={8}>
               <Col span={11}>
                 <Form.Item name="budgetMin" noStyle>
-                  <InputNumber placeholder="Min" style={{ width: '100%' }} />
+                  <InputNumber placeholder="Min" style={{ width: "100%" }} />
                 </Form.Item>
               </Col>
-              <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+              <Col span={2} style={{ textAlign: "center" }}>
+                -
+              </Col>
               <Col span={11}>
                 <Form.Item name="budgetMax" noStyle>
-                  <InputNumber placeholder="Max" style={{ width: '100%' }} />
+                  <InputNumber placeholder="Max" style={{ width: "100%" }} />
                 </Form.Item>
               </Col>
             </Row>
@@ -106,14 +115,18 @@ const BuyerForm = () => {
             <Select placeholder="Select source">
               <Option value="Website">Website</Option>
               <Option value="Referral">Referral</Option>
-              <Option value="Walk-in">Walk-in</Option>
+              <Option value="Walk_in">Walk-in</Option>
               <Option value="Call">Call</Option>
               <Option value="Other">Other</Option>
             </Select>
           </Form.Item>
 
           <Form.Item name="tags" label="Tags">
-            <Select mode="tags" style={{ width: '100%' }} placeholder="Add tags" />
+            <Select
+              mode="tags"
+              style={{ width: "100%" }}
+              placeholder="Add tags"
+            />
           </Form.Item>
         </Col>
       </Row>
@@ -125,7 +138,9 @@ const BuyerForm = () => {
 
       {/* Submit */}
       <Form.Item>
-        <Button type="primary" htmlType="submit">Submit</Button>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
       </Form.Item>
     </Form>
   );

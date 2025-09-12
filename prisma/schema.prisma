@@ -97,5 +97,5 @@ model BuyerHistory {
   buyerId    String
   changedBy  String
   changedAt  DateTime @default(now())
-  diff       Json
+  diff       Json?
 }

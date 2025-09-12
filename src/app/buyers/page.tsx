@@ -1,29 +1,17 @@
-'use client';
+import Buyer from "./Buyer";
+import { prisma } from "@/app/lib/prisma";
 
-import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase/supabaseClient';
-import { User } from '@supabase/supabase-js';
+export default async function Page() {
+  let data = [];
 
-export default function Buyer() {
-  const [user, setUser] = useState<User | null>(null);
+  try {
+    data = await prisma.buyer.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    console.log(data);
+  } catch (error) {
+    console.error("Error fetching buyers:", error);
+  }
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-    };
-    fetchUser();
-  }, []);
-
-  useEffect(()=>{
-    console.log(user);
-  },[user]);
-
-  if (!user) return <p>Loading...</p>;
-
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Welcome, {user.email}!</h1>
-    </div>
-  );
+  return <Buyer data={data} />;
 }
