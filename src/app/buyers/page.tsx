@@ -12,9 +12,12 @@ export default function WelcomePage() {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
     };
-
     fetchUser();
   }, []);
+
+  useEffect(()=>{
+    console.log(user);
+  },[user]);
 
   if (!user) return <p>Loading...</p>;
 

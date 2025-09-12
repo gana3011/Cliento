@@ -18,7 +18,7 @@ export default function MagicCallbackPage() {
         if (error) {
           router.replace('/login');
         } else {
-          router.replace('/welcome');
+          router.replace('/buyers');
         }
       });
     } else {
