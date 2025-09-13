@@ -35,7 +35,6 @@ export default async function Page({ searchParams }: PageProps) {
   const pageSize = 10;
   const skip = (page - 1) * pageSize;
 
-  // Build where clause for filters
   const where: any = {};
   
   if (params.city) {
