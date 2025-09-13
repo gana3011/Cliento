@@ -3,17 +3,18 @@ import Buyer from "./Buyer";
 import { Prisma, City, PropertyType, Status, Timeline } from "@prisma/client";
 
 interface PageProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
     q?: string;
     city?: City;
     propertyType?: PropertyType;
     status?: Status;
     timeline?: Timeline;
-  };
+  }>;
 }
 
-export default async function Page({ searchParams }: PageProps) {
+export default async function Page(props: PageProps) {
+  const searchParams = await props.searchParams;
   const pageSize = 10;
   const page = parseInt(searchParams.page || "1", 10);
 
