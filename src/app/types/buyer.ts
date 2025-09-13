@@ -1,34 +1,23 @@
-export type Buyer = {
-  id: string;
-  fullName: string;
-  email?: string | null;
-  phone: string;
-  city: string;
-  propertyType: string;
-  bhk?: string | null;
-  purpose: string;
-  budgetMin?: number | null;
-  budgetMax?: number | null;
-  timeline: string;
-  source: string;
-  status: string,
-  tags: string[];
-  ownerId: string;
-  createdAt: Date;
-  updatedAt: Date,
-};
+// types/buyer.ts
+import type { Buyer as BuyerType } from "@prisma/client";
 
-export type BuyerProps = {
-  data: Buyer[];
-  totalCount?: number;
-  page?: number;
+export interface BuyerProps {
+  data: BuyerType[];
+  total?: number;
+  currentPage?: number;
   pageSize?: number;
-  searchParams?: {
+  filters?: {
     page?: string;
-    q?: string;
     city?: string;
     propertyType?: string;
     status?: string;
     timeline?: string;
+    search?: string;
   };
-};
+  filterOptions?: {
+    cities: string[];
+    propertyTypes: string[];
+    statuses: string[];
+    timelines: string[];
+  };
+}
