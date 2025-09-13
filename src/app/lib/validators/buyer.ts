@@ -14,7 +14,7 @@ export const buyerBase = z.object({
   budgetMin: z.number().int().positive().optional().nullable(),
   budgetMax: z.number().int().positive().optional().nullable(),
   timeline: z.enum(["ZERO_3M","THREE_6M","GT_6M","Exploring"] as const),
-  source: z.enum(["Website","Referral","Walk-in","Call","Other"] as const),
+  source: z.enum(["Website","Referral","Walk_in","Call","Other"] as const),
   notes: z.string().max(1000).optional().nullable(),
   tags: z.array(z.string()).optional().default([]),
 });
