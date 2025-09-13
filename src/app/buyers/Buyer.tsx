@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase/supabaseClient';
 import { User } from '@supabase/supabase-js';
 import { BuyerProps } from '../types/buyer';
+import BuyerTable from '../components/BuyerTable';
 
 export default function Buyer({ data } : BuyerProps) {
   const [user, setUser] = useState<User | null>(null);
@@ -16,15 +17,13 @@ export default function Buyer({ data } : BuyerProps) {
     fetchUser();
   }, []);
 
-  useEffect(()=>{
-    data
-  },[]);
 
   if (!user) return <p>Loading...</p>;
 
   return (
     <div style={{ padding: '2rem' }}>
       <h1>Welcome, {user.email}!</h1>
+      <BuyerTable data={data} />
     </div>
   );
 }

@@ -47,11 +47,17 @@ const BuyerForm = () => {
             <Input placeholder="Enter phone number" />
           </Form.Item>
 
-          <Form.Item name="city" label="City">
-            <Input placeholder="Enter city" />
+          <Form.Item name="city" label="City" rules={[{ required: true }]}>
+            <Select placeholder="Select city">
+              <Option value="Chandigarh">Chandigarh</Option>
+              <Option value="Mohali">Mohali</Option>
+              <Option value="Zirakpur">Zirakpur</Option>
+              <Option value="Panchkula">Panchkula</Option>
+              <Option value="Other">Other</Option>
+            </Select>
           </Form.Item>
 
-          <Form.Item name="propertyType" label="Property Type">
+          <Form.Item name="propertyType" label="Property Type" rules={[{ required: true }]}>
             <Select
               placeholder="Select property type"
               onChange={(value) => setPropertyType(value)}
@@ -77,7 +83,7 @@ const BuyerForm = () => {
 
         {/* Right Column */}
         <Col span={12}>
-          <Form.Item name="purpose" label="Purpose">
+          <Form.Item name="purpose" label="Purpose" rules={[{ required: true }]}>
             <Select placeholder="Select purpose">
               <Option value="Buy">Buy</Option>
               <Option value="Rent">Rent</Option>
@@ -102,7 +108,7 @@ const BuyerForm = () => {
             </Row>
           </Form.Item>
 
-          <Form.Item name="timeline" label="Timeline">
+          <Form.Item name="timeline" label="Timeline" rules={[{ required: true }]}>
             <Select placeholder="Select timeline">
               <Option value="ZERO-3m">0-3 months</Option>
               <Option value="THREE_6M">3-6 months</Option>
@@ -111,7 +117,7 @@ const BuyerForm = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item name="source" label="Source">
+          <Form.Item name="source" label="Source" rules={[{ required: true }]}>
             <Select placeholder="Select source">
               <Option value="Website">Website</Option>
               <Option value="Referral">Referral</Option>
