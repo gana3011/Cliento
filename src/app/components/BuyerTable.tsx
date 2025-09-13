@@ -4,6 +4,7 @@ import React from 'react';
 import type { Buyer as BuyerType } from "@prisma/client";
 import dayjs from 'dayjs';
 import type { Buyer } from "@prisma/client";
+import Link from 'next/link';
 
 interface BuyerTableProps {
   data: BuyerType[];
@@ -104,8 +105,7 @@ const columns: TableProps<BuyerRow>['columns'] = [
     width: 100,
     render: (_, record) => (
       <Space size="middle">
-        <a>View</a>
-        <a>Edit</a>
+        <Link href={`/buyers/${record.key}`}>View/Edit</Link>
       </Space>
     ),
   },

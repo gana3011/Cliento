@@ -44,14 +44,6 @@ export default function Buyer({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-    };
-    fetchUser();
-  }, []);
-
   // Debounced search function
   const debounce = (func: Function, wait: number) => {
     let timeout: NodeJS.Timeout;
@@ -105,12 +97,8 @@ export default function Buyer({
     updateURL({ page: page.toString() });
   };
 
-  if (!user) return <p>Loading...</p>;
-
   return (
     <div style={{ padding: '2rem' }}>
-      <h1>Welcome, {user.email}!</h1>
-      
       {/* Filters */}
       <div style={{ marginBottom: '1rem', background: '#f5f5f5', padding: '1rem', borderRadius: '8px' }}>
         <Row gutter={16}>
