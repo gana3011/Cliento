@@ -6,11 +6,11 @@ import dayjs from 'dayjs';
 import type { Buyer } from "@prisma/client";
 
 interface BuyerTableProps {
-  data: Buyer[];
+  data: BuyerType[];
   total: number;
-  page: number;
+  currentPage: number;
   pageSize: number;
-  searchParams: Record<string, string | undefined>;
+  onPageChange: (page: number) => void;
 }
 
 interface BuyerRow {
@@ -153,3 +153,5 @@ const BuyerTable: React.FC<BuyerTableProps> = ({
     </div>
   );
 };
+
+export default BuyerTable;

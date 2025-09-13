@@ -182,7 +182,7 @@ export default function Buyer({
         </Row>
       </div>
 
-      <BuyerTable 
+      <BuyerTable
         data={data} 
         total={total}
         currentPage={currentPage}

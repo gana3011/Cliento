@@ -2,19 +2,6 @@
 import type { Buyer as BuyerType } from "@prisma/client";
 import Buyer from "./Buyer";
 import { prisma } from "@/app/lib/prisma";
-import Buyer from "./Buyer";
-import { Prisma, City, PropertyType, Status, Timeline } from "@prisma/client";
-
-interface PageProps {
-  searchParams: Promise<{
-    page?: string;
-    q?: string;
-    city?: City;
-    propertyType?: PropertyType;
-    status?: Status;
-    timeline?: Timeline;
-  }>;
-}
 
 interface SearchParams {
   page?: string;
