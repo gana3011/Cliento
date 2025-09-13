@@ -20,4 +20,15 @@ export type Buyer = {
 
 export type BuyerProps = {
   data: Buyer[];
+  totalCount?: number;
+  page?: number;
+  pageSize?: number;
+  searchParams?: {
+    page?: string;
+    q?: string;
+    city?: string;
+    propertyType?: string;
+    status?: string;
+    timeline?: string;
+  };
 };

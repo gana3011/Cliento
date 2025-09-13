@@ -3,10 +3,18 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase/supabaseClient';
 import { User } from '@supabase/supabase-js';
-import { BuyerProps } from '../types/buyer';
 import BuyerTable from '../components/BuyerTable';
+import { Buyer as BuyerType } from "@prisma/client";
 
-export default function Buyer({ data } : BuyerProps) {
+interface BuyerProps {
+  data: BuyerType[];
+  total: number;
+  page: number;
+  pageSize: number;
+  searchParams: Record<string, string | undefined>;
+}
+
+export default function Buyer({ data, total, page, pageSize, searchParams }: BuyerProps) {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -17,20 +25,18 @@ export default function Buyer({ data } : BuyerProps) {
     fetchUser();
   }, []);
 
-
   if (!user) return <p>Loading...</p>;
 
   return (
     <div style={{ padding: '2rem' }}>
       <h1>Welcome, {user.email}!</h1>
-      <BuyerTable data={data} />
+      <BuyerTable
+        data={data}
+        total={total}
+        page={page}
+        pageSize={pageSize}
+        searchParams={searchParams}
+      />
     </div>
   );
-}
-
-export async function getServerSideProps() {
-  const res = await fetch('http://localhost:3000/api/buyers');
-  const data = await res.json()
-
-  return { props: { data }}
 }

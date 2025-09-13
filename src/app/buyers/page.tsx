@@ -1,17 +1,58 @@
-import type { Buyer as BuyerType } from "@prisma/client";
-import Buyer from "./Buyer";
 import { prisma } from "@/app/lib/prisma";
+import Buyer from "./Buyer";
+import { Prisma, City, PropertyType, Status, Timeline } from "@prisma/client";
 
-export default async function Page() {
-  let data: BuyerType[] = [];
+interface PageProps {
+  searchParams: {
+    page?: string;
+    q?: string;
+    city?: City;
+    propertyType?: PropertyType;
+    status?: Status;
+    timeline?: Timeline;
+  };
+}
 
-  try {
-    data = await prisma.buyer.findMany({
+export default async function Page({ searchParams }: PageProps) {
+  const pageSize = 10;
+  const page = parseInt(searchParams.page || "1", 10);
+
+  const q = searchParams.q?.trim() || "";
+
+  const where: Prisma.BuyerWhereInput = {
+    ...(q
+      ? {
+          OR: [
+            { fullName: { contains: q, mode: "insensitive" } },
+            { phone: { contains: q } },
+            { email: { contains: q, mode: "insensitive" } },
+          ],
+        }
+      : {}),
+
+    ...(searchParams.city ? { city: searchParams.city } : {}),
+    ...(searchParams.propertyType ? { propertyType: searchParams.propertyType } : {}),
+    ...(searchParams.status ? { status: searchParams.status } : {}),
+    ...(searchParams.timeline ? { timeline: searchParams.timeline } : {}),
+  };
+
+  const [buyers, totalCount] = await Promise.all([
+    prisma.buyer.findMany({
+      where,
       orderBy: { createdAt: "desc" },
-    });
-  } catch (error) {
-    console.error("Error fetching buyers:", error);
-  }
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+    prisma.buyer.count({ where }),
+  ]);
 
-  return <Buyer data={data} />;
+  return (
+    <Buyer
+      data={buyers}
+      total={totalCount}
+      page={page}
+      pageSize={pageSize}
+      searchParams={searchParams}
+    />
+  );
 }
