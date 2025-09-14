@@ -4,12 +4,12 @@ import { buyerBase } from "@/app/lib/validators/buyer";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
-  req: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
 
-  const body = await req.json();
+  const body = await request.json();
 
   const parsed = buyerBase.safeParse(body);
 
@@ -44,7 +44,7 @@ export async function PUT(
     );
 
   const serverUpdatedAt = existingBuyer.updatedAt;
-  if (serverUpdatedAt.getTime() !== clientUpdatedAt.getTime())
+  if (Math.abs(serverUpdatedAt.getTime() - clientUpdatedAt.getTime())>500)
     return NextResponse.json(
       {
         ok: false,

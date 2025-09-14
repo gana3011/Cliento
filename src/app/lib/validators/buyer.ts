@@ -18,7 +18,7 @@ export const buyerBase = z.object({
   status: z.enum(["New", "Qualified", "Contacted", "Visited", "Negotiation", "Converted", "Dropped"] as const).optional(),
   notes: z.string().max(1000).optional().nullable(),
   tags: z.array(z.string()).optional().default([]),
-  updatedAt: z.string()
+  updatedAt: z.string().optional(),
 });
 
 // refine for bhk required for Apartment/Villa and budgetMax >= budgetMin
