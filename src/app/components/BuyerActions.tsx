@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import React, { useCallback, useState } from 'react'
+import ExportButton from './ExportButton';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -86,7 +87,7 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
     updateURL({ page: page.toString() });
   };
 
-  const handleClick = async () => {
+  const handleImport = async () => {
     try {
       if (csvFile) {
         const fd = new FormData();
@@ -191,6 +192,8 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
           <Col>
            <Link href={'/buyers/new'}><Button type="primary">Add Buyer</Button></Link>
           </Col>
+          </Row>
+          <Row gutter={16}>
           <Col>
             <input 
               type="file" 
@@ -198,11 +201,16 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
               onChange={handleCsvChange}
               style={{ marginBottom: '8px' }}
             />
-            <Button onClick={handleClick} disabled={!csvFile}>
+            </Col>
+            <Col>
+            <Button onClick={handleImport} disabled={!csvFile}>
               Import CSV
             </Button>
           </Col>
-        </Row>
+          <Col>
+            <ExportButton filters={filters} />
+          </Col>
+          </Row>
       </div>
   );
 };
