@@ -134,7 +134,7 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
             label="Full Name"
             rules={[{ required: true, message: "Please enter full name!" }]}
           >
-            <Input placeholder="Enter full name" />
+            <Input placeholder="Enter full name" autoFocus/>
           </Form.Item>
 
           <Form.Item name="email" label="Email" rules={[{ type: "email", message: "Please enter a valid email!" }]}>
@@ -163,10 +163,12 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
               <Option value="Apartment">Apartment</Option>
               <Option value="Villa">Villa</Option>
               <Option value="Plot">Plot</Option>
+              <Option value="Office">Office</Option>
+              <Option value="Retail">Retail</Option>
             </Select>
           </Form.Item>
 
-          {(propertyType === "Apartment" || propertyType === "Villa") && (
+          {(propertyType === "Apartment" || propertyType === "Villa") ? (
             <Form.Item name="bhk" label="BHK">
               <Select placeholder="Select BHK">
                 <Option value="BHK1">1 BHK</Option>
@@ -176,6 +178,8 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
                 <Option value="Studio">Studio</Option>
               </Select>
             </Form.Item>
+          ) : (
+            <div style={{ height: '56px', marginBottom: '24px' }}></div>
           )}
         </Col>
 
@@ -188,7 +192,7 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
             </Select>
           </Form.Item>
 
-          <Form.Item label="Budget (Min / Max)" style={{ marginBottom: 0 }}>
+          <Form.Item label="Budget (Min / Max)" style={{ marginBottom: 24 }}>
             <Row gutter={8}>
               <Col span={11}>
                 <Form.Item name="budgetMin" noStyle>
@@ -225,20 +229,6 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
             </Select>
           </Form.Item>
 
-          {(!pathname.includes('new')) && (
-            <Form.Item name="status" label="Status">
-              <Select placeholder="Select source">
-              <Option value="New">New</Option>
-              <Option value="Qualified">Qualified</Option>
-              <Option value="Contacted">Contacted</Option>
-              <Option value="Visited">Visited</Option>
-              <Option value="Negotiation">Negotiation</Option>
-              <Option value="Converted">Converted</Option>
-              <Option value="Dropped">Dropped</Option>
-              </Select>
-            </Form.Item>
-          )}
-
           <Form.Item name="tags" label="Tags">
             <Select
               mode="tags"
@@ -268,6 +258,22 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
               allowClear
             />
           </Form.Item>
+
+          {(!pathname.includes('new')) ? (
+            <Form.Item name="status" label="Status">
+              <Select placeholder="Select status">
+                <Option value="New">New</Option>
+                <Option value="Qualified">Qualified</Option>
+                <Option value="Contacted">Contacted</Option>
+                <Option value="Visited">Visited</Option>
+                <Option value="Negotiation">Negotiation</Option>
+                <Option value="Converted">Converted</Option>
+                <Option value="Dropped">Dropped</Option>
+              </Select>
+            </Form.Item>
+          ) : (
+            <div style={{ height: '56px', marginBottom: '24px' }}></div>
+          )}
         </Col>
       </Row>
 
