@@ -244,6 +244,28 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
               mode="tags"
               style={{ width: "100%" }}
               placeholder="Add tags"
+              options={[
+                { label: 'Hot Lead', value: 'hot-lead' },
+                { label: 'Follow Up', value: 'follow-up' },
+                { label: 'VIP Client', value: 'vip-client' },
+                { label: 'First Time Buyer', value: 'first-time-buyer' },
+                { label: 'Investor', value: 'investor' },
+                { label: 'Cash Buyer', value: 'cash-buyer' },
+                { label: 'Loan Required', value: 'loan-required' },
+                { label: 'Urgent', value: 'urgent' },
+                { label: 'Price Sensitive', value: 'price-sensitive' },
+                { label: 'Referral', value: 'referral' },
+                { label: 'Repeat Customer', value: 'repeat-customer' },
+                { label: 'High Budget', value: 'high-budget' },
+                { label: 'Flexible Timeline', value: 'flexible-timeline' },
+                { label: 'Location Specific', value: 'location-specific' },
+                { label: 'Ready to Move', value: 'ready-to-move' },
+              ]}
+              filterOption={(input, option) =>
+                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+              }
+              showSearch
+              allowClear
             />
           </Form.Item>
         </Col>

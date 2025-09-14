@@ -20,7 +20,7 @@ const EditBuyer = ({ buyer, history }: Props) => {
   const router = useRouter();
 
   const handleSubmit = async (values: any) => {
-    
+
     try{
       const res  = await fetch(`/api/buyers/${buyer.id}`, {
         method: "PUT",
@@ -53,7 +53,6 @@ const EditBuyer = ({ buyer, history }: Props) => {
   
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#FFFDF6' }}>
-      <NavBar />
       <div 
         style={{
           maxWidth: '1200px',

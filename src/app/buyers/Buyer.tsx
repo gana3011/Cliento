@@ -59,7 +59,6 @@ export default function Buyer({
 
   return (
     <div>
-      <NavBar />
     <div style={{ padding: '2rem 1rem 2rem 1rem', paddingBottom: '2rem' }}>
       {/* Filters */}
       

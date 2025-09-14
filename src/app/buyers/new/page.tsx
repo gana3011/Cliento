@@ -11,7 +11,6 @@ const page = () => {
   
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#FFFDF6' }}> 
-      <NavBar />
       <div 
         style={{
           maxWidth: '1200px',

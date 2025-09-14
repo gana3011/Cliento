@@ -45,6 +45,7 @@ export async function GET(req: Request) {
             { fullName: { contains: search, mode: "insensitive" } },
             { phone: { contains: search } },
             { email: { contains: search, mode: "insensitive" } },
+            { notes: { contains: search, mode: "insensitive" } },
           ],
         }
       : {}),

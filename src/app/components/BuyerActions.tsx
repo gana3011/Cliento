@@ -172,7 +172,7 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
       {contextHolder}
       <div
         style={{
-          marginBottom: "1rem",
+          marginBottom: "2rem",
           background: "#FFFDF6",
           padding: "1.5rem",
           borderRadius: "12px",
@@ -183,7 +183,7 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
       <Row gutter={16} style={{ marginBottom: "1rem" }}>
         <Col span={6}>
           <Search
-            placeholder="Search by name, phone, or email"
+            placeholder="Search by name, phone, email, or notes"
             value={searchValue}
             onChange={handleSearchChange}
             allowClear
