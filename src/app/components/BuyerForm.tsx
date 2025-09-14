@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Select, InputNumber, Row, Col } from "antd";
+import { Button, Form, Input, Select, InputNumber, Row, Col, ConfigProvider } from "antd";
 import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -47,7 +47,41 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
   };
 
   return (
-    <Form layout="vertical" form={form} onFinish={onFinish} initialValues={initialValues}>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#A9BD93',
+          colorPrimaryHover: '#A9BD93',
+          colorPrimaryActive: '#A9BD93',
+        },
+        components: {
+          Input: {
+            hoverBorderColor: '#A9BD93',
+            activeBorderColor: '#A9BD93',
+          },
+          Select: {
+            hoverBorderColor: '#A9BD93',
+            activeBorderColor: '#A9BD93',
+            optionSelectedBg: '#A9BD93',
+            optionActiveBg: '#A9BD93',
+          },
+          Button: {
+            colorPrimary: '#A9BD93',
+            colorPrimaryHover: '#FFFDF6',
+            colorPrimaryActive: '#A9BD93',
+          },
+          Form: {
+            labelColor: '#2D4A32',
+          },
+        },
+      }}
+    >
+      <Form 
+        layout="vertical" 
+        form={form} 
+        onFinish={onFinish} 
+        initialValues={initialValues}
+      >
       <Row gutter={16}>
         {/* Left Column */}
         <Col span={12}>
@@ -180,11 +214,32 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
         </Form.Item>
 
       <Form.Item>
-        <Button type="primary" htmlType="submit">
+        <Button 
+          type="primary" 
+          htmlType="submit"
+          style={{
+            backgroundColor: '#A9BD93',
+            borderColor: '#A9BD93',
+            fontWeight: '500',
+            height: '40px',
+            borderRadius: '8px'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#FFFDF6';
+            e.currentTarget.style.color = '#A9BD93';
+            e.currentTarget.style.borderColor = '#A9BD93';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#A9BD93';
+            e.currentTarget.style.color = 'white';
+            e.currentTarget.style.borderColor = '#A9BD93';
+          }}
+        >
           Submit
         </Button>
       </Form.Item>
     </Form>
+    </ConfigProvider>
   );
 };
 
