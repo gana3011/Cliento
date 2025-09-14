@@ -215,4 +215,4 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
   );
 };
 
-export default BuyerActions
+export default BuyerActions;
