@@ -2,7 +2,6 @@
 
 import { Button } from "antd";
 import Link from "next/link";
-import { useEffect } from "react";
 
 interface SearchParams {
   page?: string;
@@ -14,7 +13,7 @@ interface SearchParams {
 }
 
 export default function ExportButton({ filters }: { filters: SearchParams }) {
-  // Remove undefined/empty filters
+  
   const query = new URLSearchParams(
     Object.fromEntries(
       Object.entries(filters).filter(([_, v]) => v !== undefined && v !== "")
@@ -23,12 +22,9 @@ export default function ExportButton({ filters }: { filters: SearchParams }) {
 
   const exportUrl = `/api/buyers/export${query ? `?${query}` : ""}`;
 
-
   return (
     <Link
       href={exportUrl}
-      target="_blank"
-      rel="noopener noreferrer"
     >
         <Button
           style={{

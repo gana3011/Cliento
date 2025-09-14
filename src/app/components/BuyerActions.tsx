@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Col, Input, Row, Select, ConfigProvider } from "antd";
+import { Button, Col, Input, Row, Select, ConfigProvider, message } from "antd";
 import type { Buyer as BuyerType } from "@prisma/client";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -31,7 +31,9 @@ interface BuyerActionsProps {
 const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
   const [searchValue, setSearchValue] = useState(filters.search || "");
   const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [isImporting, setIsImporting] = useState(false);
   const router = useRouter();
+  const [messageApi, contextHolder] = message.useMessage();
   const searchParams = useSearchParams();
 
   // Debounced search function
@@ -91,31 +93,50 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
   };
 
   const handleImport = async () => {
+    if (!csvFile) return;
+    
+    setIsImporting(true);
     try {
-      if (csvFile) {
-        const fd = new FormData();
-        fd.append("file", csvFile);
-        const res = await fetch("/api/buyers/import", {
-          method: "POST",
-          body: fd,
-        });
-        const json = await res.json();
-        console.log(json);
-
-        if (res.ok) {
-          setCsvFile(null);
-          const fileInput = document.querySelector(
-            'input[type="file"]'
-          ) as HTMLInputElement;
-          if (fileInput) {
-            fileInput.value = "";
-          }
-
-          router.refresh();
+      const fd = new FormData();
+      fd.append("file", csvFile);
+      const res = await fetch("/api/buyers/import", {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      console.log(data);
+      
+      if (data.ok) {
+        setCsvFile(null);
+        const fileInput = document.querySelector(
+          'input[type="file"]'
+        ) as HTMLInputElement;
+        if (fileInput) {
+          fileInput.value = "";
         }
+
+        messageApi.open({
+          type: 'success',
+          content: 'CSV imported successfully',
+        });
+
+        setTimeout(() => {
+          router.refresh();
+        }, 500);
+      } else {
+        messageApi.open({
+          type: 'error',
+          content: data.message,
+        });
       }
     } catch (error) {
       console.error(error);
+      messageApi.open({
+        type: 'error',
+        content: 'Failed to import CSV file',
+      });
+    } finally {
+      setIsImporting(false);
     }
   };
 
@@ -148,6 +169,7 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
         },
       }}
     >
+      {contextHolder}
       <div
         style={{
           marginBottom: "1rem",
@@ -292,28 +314,29 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
         <Col>
           <Button
             onClick={handleImport}
-            disabled={!csvFile}
+            disabled={!csvFile || isImporting}
+            loading={isImporting}
             style={{
-              backgroundColor: csvFile ? "#A9BD93" : "#FFFFFF",
+              backgroundColor: csvFile && !isImporting ? "#A9BD93" : "#FFFFFF",
               borderColor: "#A9BD93",
-              color: csvFile ? "white" : "#A9BD93",
+              color: csvFile && !isImporting ? "white" : "#A9BD93",
               borderRadius: "8px",
               transition: "all 0.2s ease-in-out",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "#D97706";
-              e.currentTarget.style.color = "#D97706";
-              e.currentTarget.style.backgroundColor = "#FFFFFF";
+                e.currentTarget.style.borderColor = "#D97706";
+                e.currentTarget.style.color = "#D97706";
+                e.currentTarget.style.backgroundColor = "#FFFFFF";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "#A9BD93";
-              e.currentTarget.style.color = csvFile ? "white" : "#A9BD93";
-              e.currentTarget.style.backgroundColor = csvFile
-                ? "#A9BD93"
-                : "#FFFFFF";
+                e.currentTarget.style.borderColor = "#A9BD93";
+                e.currentTarget.style.color = csvFile ? "white" : "#A9BD93";
+                e.currentTarget.style.backgroundColor = csvFile
+                  ? "#A9BD93"
+                  : "#FFFFFF"; 
             }}
           >
-            Import CSV
+            {isImporting ? 'Importing...' : 'Import CSV'}
           </Button>
         </Col>
         <Col>

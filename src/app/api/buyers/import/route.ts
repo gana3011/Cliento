@@ -53,17 +53,17 @@ export async function POST(request: NextRequest) {
       { status: 401 }
     );
   }
-  
+
   let csvText: string;
   try {
     const form = await request.formData();
     const file = form.get("file") as File | null;
     if (!file)
-      return NextResponse.json({ message: "No file" }, { status: 400 });
+      return NextResponse.json({ ok:false, message: "No file" }, { status: 400 });
     csvText = await file.text();
   } catch (error) {
     return NextResponse.json(
-      { message: "Cannot read request body" },
+      { ok: false, message: "Cannot read request body" },
       { status: 400 }
     );
   }
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
     records = Array.isArray(parsed) ? parsed : [];
   } catch (error: any) {
     return NextResponse.json(
-      { message: "Invalid CSV", error: error.message },
+      { ok: false, message: "Invalid CSV", error: error.message },
       { status: 400 }
     );
   }

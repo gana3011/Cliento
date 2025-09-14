@@ -20,9 +20,7 @@ const EditBuyer = ({ buyer, history }: Props) => {
   const router = useRouter();
 
   const handleSubmit = async (values: any) => {
-
-    console.log('values',values); 
-
+    
     try{
       const res  = await fetch(`/api/buyers/${buyer.id}`, {
         method: "PUT",
