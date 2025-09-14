@@ -3,6 +3,7 @@ import { prisma } from "@/app/lib/prisma";
 import { Prisma } from "@prisma/client";
 // @ts-ignore
 import { Parser } from "json2csv";
+import { supabaseServerClient } from "@/app/lib/supabase/supabaseServerClient";
 
 
 interface SearchParams {
@@ -14,6 +15,15 @@ interface SearchParams {
 }
 
 export async function GET(req: Request) {
+    const supabase = await supabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
   const { searchParams } = new URL(req.url);
 
   const params: SearchParams = {
@@ -25,7 +35,7 @@ export async function GET(req: Request) {
   };
 
   console.log(params);
-  
+
   const { search, city, propertyType, status, timeline } = params;
 
   const where: Prisma.BuyerWhereInput = {

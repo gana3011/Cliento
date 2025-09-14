@@ -41,6 +41,19 @@ const bhkMap: Record<string, "BHK1" | "BHK2" | "BHK3" | "BHK4" | "Studio"> = {
 };
 
 export async function POST(request: NextRequest) {
+
+    const supabase = await supabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json(
+      { ok: false, message: "Not authenticated" },
+      { status: 401 }
+    );
+  }
+  
   let csvText: string;
   try {
     const form = await request.formData();
@@ -93,18 +106,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { ok: false, message: "Missing headers", missing },
       { status: 400 }
-    );
-  }
-
-  const supabase = await supabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json(
-      { ok: false, message: "Not authenticated" },
-      { status: 401 }
     );
   }
 
