@@ -1,12 +1,17 @@
 'use client';
 
-import React, { useEffect } from "react";
+import React from "react";
 import type { Buyer } from "@prisma/client";
 import type { BuyerHistory as History } from "@prisma/client";
 import { Form } from "antd";
 import BuyerForm from "@/app/components/BuyerForm";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
+import { z } from "zod";
+import { buyerBase } from "@/app/lib/validators/buyer";
+
+// Type for form values
+type BuyerFormValues = z.infer<typeof buyerBase>;
 
 type Props = {
   buyer: Buyer;
@@ -18,7 +23,7 @@ const EditBuyer = ({ buyer, history }: Props) => {
 
   const router = useRouter();
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: BuyerFormValues) => {
 
     try{
       const res  = await fetch(`/api/buyers/${buyer.id}`, {

@@ -1,8 +1,8 @@
 'use client';
 
-import BuyerForm from '@/app/components/BuyerForm'
 import { useForm } from 'antd/es/form/Form'
 import React from 'react'
+import BuyerForm from '../../components/BuyerForm';
 
 const Page = () => {
 

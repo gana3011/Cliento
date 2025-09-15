@@ -12,7 +12,6 @@ interface LoginFormValues {
 }
 
 export default function LoginPage() {
-  const [messageType, setMessageType] = useState<'success' | 'error' | undefined>();
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   

@@ -1,8 +1,17 @@
 
 import type { Buyer as BuyerType } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import Buyer from "./Buyer";
 import { prisma } from "@/app/lib/prisma";
 import { PageProps } from "../types/buyer";
+
+// Interface for filter options
+interface FilterOptions {
+  cities: string[];
+  propertyTypes: string[];
+  statuses: string[];
+  timelines: string[];
+}
 
 export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams;
@@ -10,22 +19,22 @@ export default async function Page({ searchParams }: PageProps) {
   const pageSize = 10;
   const skip = (page - 1) * pageSize;
 
-  const where: any = {};
+  const where: Prisma.BuyerWhereInput = {};
   
   if (params.city) {
-    where.city = params.city;
+    where.city = params.city as "Chandigarh" | "Mohali" | "Zirakpur" | "Panchkula" | "Other";
   }
   
   if (params.propertyType) {
-    where.propertyType = params.propertyType;
+    where.propertyType = params.propertyType as "Apartment" | "Villa" | "Plot" | "Office" | "Retail";
   }
   
   if (params.status) {
-    where.status = params.status;
+    where.status = params.status as "New" | "Qualified" | "Contacted" | "Visited" | "Negotiation" | "Converted" | "Dropped";
   }
   
   if (params.timeline) {
-    where.timeline = params.timeline;
+    where.timeline = params.timeline as "ZERO_3M" | "THREE_6M" | "GT_6M" | "Exploring";
   }
   
   // Search functionality
@@ -40,7 +49,12 @@ export default async function Page({ searchParams }: PageProps) {
 
   let data: BuyerType[] = [];
   let total = 0;
-  let filterOptions: any = {};
+  let filterOptions: FilterOptions = {
+    cities: [],
+    propertyTypes: [],
+    statuses: [],
+    timelines: [],
+  };
 
   try {
     // Fetch paginated data
