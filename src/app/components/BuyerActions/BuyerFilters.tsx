@@ -1,23 +1,8 @@
 import { Col, Select } from "antd";
 import styles from "./BuyerActions.module.css";
+import { BuyerFiltersProps } from "@/app/types/buyer";
 
 const { Option } = Select;
-
-interface BuyerFiltersProps {
-  filters: {
-    city?: string;
-    propertyType?: string;
-    status?: string;
-    timeline?: string;
-  };
-  filterOptions: {
-    cities: string[];
-    propertyTypes: string[];
-    statuses: string[];
-    timelines: string[];
-  };
-  onFilterChange: (key: string, value: string) => void;
-}
 
 const BuyerFilters = ({ filters, filterOptions, onFilterChange }: BuyerFiltersProps) => {
   return (

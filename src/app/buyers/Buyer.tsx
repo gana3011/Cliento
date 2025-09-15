@@ -3,34 +3,9 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '../lib/supabase/supabaseClient';
 import { User } from '@supabase/supabase-js';
-import { Input, Select, Row, Col, Space, Button } from 'antd';
 import BuyerTable from '../components/BuyerTable';
-
-import type { Buyer as BuyerType } from "@prisma/client";
-import Link from 'next/link';
-import NavBar from '../components/NavBar';
 import BuyerActions from '../components/BuyerActions';
-
-interface BuyerProps {
-  data: BuyerType[];
-  total: number;
-  currentPage: number;
-  pageSize: number;
-  filters: {
-    page?: string;
-    city?: string;
-    propertyType?: string;
-    status?: string;
-    timeline?: string;
-    search?: string;
-  };
-  filterOptions: {
-    cities: string[];
-    propertyTypes: string[];
-    statuses: string[];
-    timelines: string[];
-  };
-}
+import { BuyerProps } from '../types/buyer';
 
 export default function Buyer({ 
   data, 

@@ -3,17 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ExportButton from "../ExportButton";
 import styles from "./BuyerActions.module.css";
-
-interface BuyerImportExportProps {
-  filters: {
-    page?: string;
-    city?: string;
-    propertyType?: string;
-    status?: string;
-    timeline?: string;
-    search?: string;
-  };
-}
+import { BuyerImportExportProps } from "@/app/types/buyer";
 
 const BuyerImportExport = ({ filters }: BuyerImportExportProps) => {
   const [csvFile, setCsvFile] = useState<File | null>(null);

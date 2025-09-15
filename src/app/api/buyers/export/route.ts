@@ -4,15 +4,7 @@ import { Prisma } from "@prisma/client";
 // @ts-ignore
 import { Parser } from "json2csv";
 import { supabaseServerClient } from "@/app/lib/supabase/supabaseServerClient";
-
-
-interface SearchParams {
-  city?: string;
-  propertyType?: string;
-  status?: string;
-  timeline?: string;
-  search?: string;
-}
+import { SearchParams } from "@/app/types/buyer";
 
 export async function GET(req: Request) {
     const supabase = await supabaseServerClient();

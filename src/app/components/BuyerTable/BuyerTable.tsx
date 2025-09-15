@@ -1,32 +1,10 @@
 'use client';
 import { Space, Table, TableProps } from 'antd';
 import React from 'react';
-import type { Buyer as BuyerType } from "@prisma/client";
 import dayjs from 'dayjs';
-import type { Buyer } from "@prisma/client";
 import Link from 'next/link';
 import styles from './BuyerTable.module.css';
-
-interface BuyerTableProps {
-  data: BuyerType[];
-  total: number;
-  currentPage: number;
-  pageSize: number;
-  onPageChange: (page: number) => void;
-}
-
-interface BuyerRow {
-  key: string;
-  fullName: string;
-  phone: string;
-  city: string;
-  propertyType: string;
-  budgetMin?: number | null;
-  budgetMax?: number | null;
-  timeline: string;
-  status: string;
-  updatedAt: string;
-}
+import { BuyerRow, BuyerTableProps } from '@/app/types/buyer';
 
 const timelineMap: Record<string, string> = {
   ZERO_3M: '0-3m',

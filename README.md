@@ -501,4 +501,3 @@ GET /buyers/[id]
 
 ---
 
-Built with ❤️ for modern client management

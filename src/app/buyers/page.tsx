@@ -2,19 +2,7 @@
 import type { Buyer as BuyerType } from "@prisma/client";
 import Buyer from "./Buyer";
 import { prisma } from "@/app/lib/prisma";
-
-interface SearchParams {
-  page?: string;
-  city?: string;
-  propertyType?: string;
-  status?: string;
-  timeline?: string;
-  search?: string;
-}
-
-interface PageProps {
-  searchParams: Promise<SearchParams>;
-}
+import { PageProps } from "../types/buyer";
 
 export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams;

@@ -2,15 +2,7 @@
 
 import { Button } from "antd";
 import Link from "next/link";
-
-interface SearchParams {
-  page?: string;
-  city?: string;
-  propertyType?: string;
-  status?: string;
-  timeline?: string;
-  search?: string;
-}
+import { SearchParams } from "../types/buyer";
 
 export default function ExportButton({ filters }: { filters: SearchParams }) {
   

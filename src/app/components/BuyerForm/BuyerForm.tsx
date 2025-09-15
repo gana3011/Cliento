@@ -4,14 +4,9 @@ import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Select, InputNumber, Row, Col, ConfigProvider, message } from "antd";
 import { usePathname, useRouter } from "next/navigation";
 import styles from "./BuyerForm.module.css";
+import { BuyerFormProps } from "@/app/types/buyer";
 
 const { Option } = Select;
-
-type BuyerFormProps = {
-  form: any;
-  initialValues?: any;
-  onSubmit?: (values: any) => Promise<void> | void;
-};
 
 const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
   const router = useRouter();

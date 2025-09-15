@@ -1,13 +1,9 @@
 import { Col, Input } from "antd";
 import { useState } from "react";
 import styles from "./BuyerActions.module.css";
+import { BuyerSearchBarProps } from "@/app/types/buyer";
 
 const { Search } = Input;
-
-interface BuyerSearchBarProps {
-  initialValue: string;
-  onSearch: (value: string) => void;
-}
 
 const BuyerSearchBar = ({ initialValue, onSearch }: BuyerSearchBarProps) => {
   const [searchValue, setSearchValue] = useState(initialValue);

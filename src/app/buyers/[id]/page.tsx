@@ -2,7 +2,6 @@ import { prisma } from '@/app/lib/prisma';
 import React from 'react'
 import EditBuyer from './EditBuyer';
 
-
 type Props = { params: Promise<{ id: string }> };
 
 const page = async ({ params }: Props) => {

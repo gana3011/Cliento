@@ -1,7 +1,6 @@
 "use client";
 
 import { Row, ConfigProvider } from "antd";
-import type { Buyer as BuyerType } from "@prisma/client";
 import React from "react";
 import BuyerSearchBar from "./BuyerSearchBar";
 import BuyerFilters from "./BuyerFilters";
@@ -9,23 +8,7 @@ import BuyerActionButtons from "./BuyerActionButtons";
 import BuyerImportExport from "./BuyerImportExport";
 import { useBuyerFilters } from "./useBuyerFilters";
 import styles from "./BuyerActions.module.css";
-
-interface BuyerActionsProps {
-  filters: {
-    page?: string;
-    city?: string;
-    propertyType?: string;
-    status?: string;
-    timeline?: string;
-    search?: string;
-  };
-  filterOptions: {
-    cities: string[];
-    propertyTypes: string[];
-    statuses: string[];
-    timelines: string[];
-  };
-}
+import { BuyerActionsProps } from "@/app/types/buyer";
 
 const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
   const { debouncedSearch, handleFilterChange } = useBuyerFilters();
