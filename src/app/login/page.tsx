@@ -93,7 +93,7 @@ export default function LoginPage() {
             borderRadius: '12px',
             boxShadow: '0 4px 16px rgba(169, 189, 147, 0.15)' 
           }}
-          bodyStyle={{ padding: '2.5rem' }}
+          styles={{ body: { padding: '2.5rem' } }}
         >
           <Space direction="vertical" size="large" style={{ width: '100%' }}>
             <div style={{ textAlign: 'center' }}>
