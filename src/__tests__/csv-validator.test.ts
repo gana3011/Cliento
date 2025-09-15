@@ -1,9 +1,11 @@
+import { CSVRow } from '@/app/types/buyer';
 import { createBuyerSchema } from '../app/lib/validators/buyer';
+
 
 describe('CSV Row Validator', () => {
   describe('CSV Data Transformation and Validation', () => {
     // Simulate CSV row data (typically strings from CSV parsing)
-    const csvRowToObject = (csvRow: any) => ({
+    const csvRowToObject = (csvRow: CSVRow) => ({
       fullName: csvRow.fullName?.trim(),
       email: csvRow.email?.trim() || '',
       phone: csvRow.phone?.trim(),
@@ -285,7 +287,7 @@ describe('CSV Row Validator', () => {
         }
       ];
 
-      const csvRowToObject = (csvRow: any) => ({
+      const csvRowToObject = (csvRow: CSVRow) => ({
         fullName: csvRow.fullName?.trim(),
         email: csvRow.email?.trim() || '',
         phone: csvRow.phone?.trim(),

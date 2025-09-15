@@ -1,5 +1,11 @@
 // types/buyer.ts
 import type { Buyer as BuyerType } from "@prisma/client";
+import type { FormInstance } from "antd";
+import { z } from "zod";
+import { buyerBase } from "@/app/lib/validators/buyer";
+
+// Type for form values
+type BuyerFormValues = z.infer<typeof buyerBase>;
 
 export interface SearchParams {
   page?: string;
@@ -85,9 +91,9 @@ export interface BuyerSearchBarProps {
 }
 
 export type BuyerFormProps = {
-  form: any;
-  initialValues?: any;
-  onSubmit?: (values: any) => Promise<void> | void;
+  form: FormInstance;
+  initialValues?: Partial<BuyerFormValues>;
+  onSubmit?: (values: BuyerFormValues) => Promise<void> | void;
 };
 
 export interface BuyerTableProps {
@@ -109,4 +115,21 @@ export interface BuyerRow {
   timeline: string;
   status: string;
   updatedAt: string;
+}
+
+export interface CSVRow {
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  city?: string;
+  propertyType?: string;
+  bhk?: string;
+  purpose?: string;
+  budgetMin?: string | number;
+  budgetMax?: string | number;
+  timeline?: string;
+  source?: string;
+  status?: string;
+  notes?: string;
+  tags?: string;
 }

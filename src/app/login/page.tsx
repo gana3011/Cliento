@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Form, Input, Button, Card, Typography, Alert, Space, ConfigProvider, message } from 'antd';
+import { Form, Input, Button, Card, Typography, Space, ConfigProvider, message } from 'antd';
 import { MailOutlined } from '@ant-design/icons';
 import { supabase } from '../lib/supabase/supabaseClient';
 

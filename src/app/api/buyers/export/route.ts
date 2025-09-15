@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import { Prisma } from "@prisma/client";
-// @ts-ignore
 import { Parser } from "json2csv";
 import { supabaseServerClient } from "@/app/lib/supabase/supabaseServerClient";
 import { SearchParams } from "@/app/types/buyer";
@@ -41,10 +40,10 @@ export async function GET(req: Request) {
           ],
         }
       : {}),
-    ...(city ? { city: city as any } : {}),
-    ...(propertyType ? { propertyType: propertyType as any } : {}),
-    ...(status ? { status: status as any } : {}),
-    ...(timeline ? { timeline: timeline as any } : {}),
+    ...(city ? { city: city as "Chandigarh" | "Mohali" | "Zirakpur" | "Panchkula" | "Other" } : {}),
+    ...(propertyType ? { propertyType: propertyType as "Apartment" | "Villa" | "Plot" | "Office" | "Retail" } : {}),
+    ...(status ? { status: status as "New" | "Qualified" | "Contacted" | "Visited" | "Negotiation" | "Converted" | "Dropped" } : {}),
+    ...(timeline ? { timeline: timeline as "ZERO_3M" | "THREE_6M" | "GT_6M" | "Exploring" } : {}),
   };
 
   try {

@@ -5,6 +5,11 @@ import { Button, Form, Input, Select, InputNumber, Row, Col, ConfigProvider, mes
 import { usePathname, useRouter } from "next/navigation";
 import styles from "./BuyerForm.module.css";
 import { BuyerFormProps } from "@/app/types/buyer";
+import { z } from "zod";
+import { buyerBase } from "@/app/lib/validators/buyer";
+
+// Type for form values
+type BuyerFormValues = z.infer<typeof buyerBase>;
 
 const { Option } = Select;
 
@@ -26,7 +31,7 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
     }
   }, [initialValues]);
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: BuyerFormValues) => {
     setIsLoading(true);
     
     try {
@@ -66,11 +71,12 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
           }, 1000);
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
+      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
       messageApi.open({
         type: 'error',
-        content: err.message || 'An unexpected error occurred',
+        content: errorMessage,
       });
     } finally {
       setIsLoading(false);

@@ -4,7 +4,7 @@ import BuyerForm from '@/app/components/BuyerForm'
 import { useForm } from 'antd/es/form/Form'
 import React from 'react'
 
-const page = () => {
+const Page = () => {
 
   const [form] = useForm();
   
@@ -45,4 +45,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
