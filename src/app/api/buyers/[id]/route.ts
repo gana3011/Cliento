@@ -3,6 +3,7 @@ import { supabaseServerClient } from "@/app/lib/supabase/supabaseServerClient";
 import { buyerBase } from "@/app/lib/validators/buyer";
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
+import { updateBuyerLimiter, getIdentifier } from "@/app/lib/rate-limiter";
 
 function formatZodErrors(error: ZodError): string {
   return error.issues
@@ -37,6 +38,27 @@ export async function PUT(
 
   if (!user) {
     return NextResponse.json({ ok: false, message: "Not authenticated" }, { status: 401 });
+  }
+
+  // **RATE LIMITING CALL**
+  const identifier = getIdentifier(request, user.id);
+  const { success, limit, remaining, reset } = await updateBuyerLimiter.limit(identifier);
+  
+  if (!success) {
+    return NextResponse.json(
+      { 
+        ok: false, 
+        message: `Rate limit exceeded. You can update ${limit} buyers per minute. Try again later.` 
+      },
+      { 
+        status: 429,
+        headers: {
+          'X-RateLimit-Limit': limit.toString(),
+          'X-RateLimit-Remaining': remaining.toString(),
+          'X-RateLimit-Reset': new Date(reset).toISOString(),
+        }
+      }
+    );
   }
 
   const existingBuyer = await prisma.buyer.findUnique({ where: { id } });

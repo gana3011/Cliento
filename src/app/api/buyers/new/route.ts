@@ -3,6 +3,7 @@ import { prisma } from "@/app/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseServerClient } from "@/app/lib/supabase/supabaseServerClient";
 import { ZodError } from "zod";
+import { createBuyerLimiter, getIdentifier } from "@/app/lib/rate-limiter";
 
 // Helper function to format Zod validation errors
 function formatZodErrors(error: ZodError): string {
@@ -31,6 +32,27 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ ok: false, message: "Not authenticated" }, { status: 401 });
+    }
+
+   // **RATE LIMITING CALL**
+    const identifier = getIdentifier(request, user.id);
+    const { success, limit, remaining, reset } = await createBuyerLimiter.limit(identifier);
+    
+    if (!success) {
+      return NextResponse.json(
+        { 
+          ok: false, 
+          message: `Rate limit exceeded. You can create ${limit} buyers per minute. Try again later.` 
+        },
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': limit.toString(),
+            'X-RateLimit-Remaining': remaining.toString(),
+            'X-RateLimit-Reset': new Date(reset).toISOString(),
+          }
+        }
+      );
     }
 
     const ownerId = user.id;
