@@ -3,6 +3,7 @@ import { parse as csvParse } from "csv-parse/sync";
 import { supabaseServerClient } from "@/app/lib/supabase/supabaseServerClient";
 import { buyerBase } from "@/app/lib/validators/buyer";
 import { prisma } from "@/app/lib/prisma";
+import { importBuyerLimiter, getIdentifier } from "@/app/lib/rate-limiter";
 
 const MAX_ROWS = 200;
 const EXPECTED_HEADERS = [
@@ -53,17 +54,38 @@ export async function POST(request: NextRequest) {
       { status: 401 }
     );
   }
+
+  // **RATE LIMITING CALL**
+  const identifier = getIdentifier(request, user.id);
+  const { success, limit, remaining, reset } = await importBuyerLimiter.limit(identifier);
   
+  if (!success) {
+    return NextResponse.json(
+      { 
+        ok: false, 
+        message: `Rate limit exceeded. You can import ${limit} files per 5 minutes. Try again later.` 
+      },
+      { 
+        status: 429,
+        headers: {
+          'X-RateLimit-Limit': limit.toString(),
+          'X-RateLimit-Remaining': remaining.toString(),
+          'X-RateLimit-Reset': new Date(reset).toISOString(),
+        }
+      }
+    );
+  }
+
   let csvText: string;
   try {
     const form = await request.formData();
     const file = form.get("file") as File | null;
     if (!file)
-      return NextResponse.json({ message: "No file" }, { status: 400 });
+      return NextResponse.json({ ok:false, message: "No file" }, { status: 400 });
     csvText = await file.text();
   } catch (error) {
     return NextResponse.json(
-      { message: "Cannot read request body" },
+      { ok: false, message: "Cannot read request body" },
       { status: 400 }
     );
   }
@@ -78,7 +100,7 @@ export async function POST(request: NextRequest) {
     records = Array.isArray(parsed) ? parsed : [];
   } catch (error: any) {
     return NextResponse.json(
-      { message: "Invalid CSV", error: error.message },
+      { ok: false, message: "Invalid CSV", error: error.message },
       { status: 400 }
     );
   }

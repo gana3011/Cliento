@@ -46,6 +46,7 @@ export default async function Page({ searchParams }: PageProps) {
       { fullName: { contains: params.search, mode: 'insensitive' } },
       { phone: { contains: params.search, mode: 'insensitive' } },
       { email: { contains: params.search, mode: 'insensitive' } },
+      { notes: { contains: params.search, mode: 'insensitive' } },
     ];
   }
 

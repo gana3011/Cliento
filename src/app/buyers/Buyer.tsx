@@ -8,6 +8,7 @@ import BuyerTable from '../components/BuyerTable';
 import BuyerActions from '../components/BuyerActions';
 import type { Buyer as BuyerType } from "@prisma/client";
 import Link from 'next/link';
+import NavBar from '../components/NavBar';
 
 interface BuyerProps {
   data: BuyerType[];
@@ -57,8 +58,10 @@ export default function Buyer({
   }, []);
 
   return (
-    <div style={{ padding: '2rem' }}>
+    <div>
+    <div style={{ padding: '2rem 1rem 2rem 1rem', paddingBottom: '2rem' }}>
       {/* Filters */}
+      
       <BuyerActions 
         filters={filters}
         filterOptions={filterOptions}
@@ -71,6 +74,7 @@ export default function Buyer({
         pageSize={pageSize}
         onPageChange={handlePageChange}
       />
+    </div>
     </div>
   );
 }

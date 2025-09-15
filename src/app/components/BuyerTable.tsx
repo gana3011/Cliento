@@ -48,6 +48,7 @@ const columns: TableProps<BuyerRow>['columns'] = [
     dataIndex: 'fullName',
     key: 'fullName',
     width: 150,
+    render: (text) => <span style={{ fontWeight: '500', color: '#2c3e50' }}>{text}</span>
   },
   {
     title: 'Phone',
@@ -92,6 +93,24 @@ const columns: TableProps<BuyerRow>['columns'] = [
     dataIndex: 'status',
     key: 'status',
     width: 100,
+    render: (status) => {
+      return (
+        <span 
+          style={{
+            padding: '4px 8px',
+            borderRadius: '6px',
+            fontSize: '12px',
+            fontWeight: '700',
+            backgroundColor: status === 'Dropped' ? '#f0f0f0' : 'rgba(217, 119, 6, 0.1)',
+            color: status === 'Dropped' ? '#666' : '#D97706',
+            border: status === 'Dropped' ? '1px solid #ccc' : '1px solid rgba(217, 119, 6, 0.3)',
+            textTransform: 'uppercase'
+          }}
+        >
+          {status}
+        </span>
+      );
+    }
   },
   {
     title: 'Updated At',
@@ -105,7 +124,20 @@ const columns: TableProps<BuyerRow>['columns'] = [
     width: 100,
     render: (_, record) => (
       <Space size="middle">
-        <Link href={`/buyers/${record.key}`}>View/Edit</Link>
+        <Link 
+          href={`/buyers/${record.key}`}
+          style={{ 
+            color: '#D97706', 
+            fontWeight: '700',
+            textDecoration: 'none',
+            padding: '4px 8px',
+            borderRadius: '6px',
+            backgroundColor: 'rgba(217, 119, 6, 0.1)',
+            border: '1px solid rgba(217, 119, 6, 0.3)'
+          }}
+        >
+          View/Edit
+        </Link>
       </Space>
     ),
   },
@@ -148,8 +180,49 @@ const BuyerTable: React.FC<BuyerTableProps> = ({
           position: ['bottomCenter'],
         }}
         scroll={{ x: 1200 }}
-        size="small"
+        size="middle"
+        style={{
+          backgroundColor: '#FFFDF6'
+        }}
+        rowClassName={(record, index) => 
+          index % 2 === 0 ? 'table-row-light' : 'table-row-dark'
+        }
       />
+      <style jsx global>{`
+        .table-row-light td {
+          background-color: #FFFDF6 !important;
+        }
+        .table-row-dark td {
+          background-color: #ffffff !important;
+        }
+        .ant-table-thead > tr > th {
+          background-color: #A9BD93 !important;
+          color: white !important;
+          font-weight: 600 !important;
+          border-bottom: 2px solid #8fa876 !important;
+        }
+        .ant-table-tbody > tr:hover > td {
+          background-color: rgba(169, 189, 147, 0.1) !important;
+        }
+        .ant-pagination-item-active {
+          border-color: #A9BD93 !important;
+          background-color: #A9BD93 !important;
+        }
+        .ant-pagination-item-active a {
+          color: white !important;
+        }
+        .ant-pagination-item:hover {
+          border-color: #A9BD93 !important;
+        }
+        .ant-pagination-item:hover a {
+          color: #A9BD93 !important;
+        }
+        .ant-pagination-next:hover .ant-pagination-item-link,
+        .ant-pagination-prev:hover .ant-pagination-item-link {
+          border-color: #A9BD93 !important;
+          color: #A9BD93 !important;
+        }
+      `}</style>
     </div>
   );
 };

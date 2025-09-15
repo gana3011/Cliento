@@ -21,7 +21,7 @@ export async function GET(req: Request) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    return NextResponse.json({ ok: false, message: "Not authenticated" }, { status: 401 });
   }
 
   const { searchParams } = new URL(req.url);
@@ -45,6 +45,7 @@ export async function GET(req: Request) {
             { fullName: { contains: search, mode: "insensitive" } },
             { phone: { contains: search } },
             { email: { contains: search, mode: "insensitive" } },
+            { notes: { contains: search, mode: "insensitive" } },
           ],
         }
       : {}),
@@ -95,6 +96,6 @@ export async function GET(req: Request) {
     });
   } catch (err) {
     console.error("CSV export error:", err);
-    return NextResponse.json({ error: "Failed to export buyers" }, { status: 500 });
+    return NextResponse.json({ ok: false, message: "Failed to export buyers" }, { status: 500 });
   }
 }

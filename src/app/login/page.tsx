@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Form, Input, Button, Card, Typography, Alert, Space } from 'antd';
+import { Form, Input, Button, Card, Typography, Alert, Space, ConfigProvider, message } from 'antd';
 import { MailOutlined } from '@ant-design/icons';
 import { supabase } from '../lib/supabase/supabaseClient';
 
@@ -12,15 +12,14 @@ interface LoginFormValues {
 }
 
 export default function LoginPage() {
-  const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'success' | 'error' | undefined>();
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleLogin = async (values: LoginFormValues) => {
     setLoading(true);
-    setMessage('');
-    setMessageType(undefined);
 
     const { error } = await supabase.auth.signInWithOtp({
       email: values.email,
@@ -32,89 +31,144 @@ export default function LoginPage() {
     setLoading(false);
 
     if (error) {
-      setMessage(`Error: ${error.message}`);
-      setMessageType('error');
+      messageApi.open({
+          type: 'error',
+          content: error.message,
+        });
     } else {
-      setMessage('Check your email for the magic link!');
-      setMessageType('success');
+      messageApi.open({
+          type: 'success',
+          content: 'Check your mail for magic link',
+        });
       form.resetFields();
     }
   };
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      minHeight: '100vh',
-      backgroundColor: '#f5f5f5'
-    }}>
-      <Card 
-        style={{ 
-          width: 400, 
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)' 
-        }}
-      >
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
-          <div style={{ textAlign: 'center' }}>
-            <Title level={2}>Welcome Back</Title>
-            <Text type="secondary">Sign in with your email to continue</Text>
-          </div>
-
-          <Form
-            form={form}
-            name="login"
-            onFinish={handleLogin}
-            layout="vertical"
-            size="large"
-          >
-            <Form.Item
-              name="email"
-              label="Email Address"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter your email address',
-                },
-                {
-                  type: 'email',
-                  message: 'Please enter a valid email address',
-                },
-              ]}
-            >
-              <Input
-                prefix={<MailOutlined />}
-                placeholder="Enter your email"
-                autoComplete="email"
-              />
-            </Form.Item>
-
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={loading}
-                block
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#A9BD93',
+          colorPrimaryHover: '#A9BD93',
+          colorPrimaryActive: '#A9BD93',
+          colorSuccess: '#A9BD93',
+        },
+        components: {
+          Input: {
+            hoverBorderColor: '#A9BD93',
+            activeBorderColor: '#A9BD93',
+          },
+          Button: {
+            colorPrimary: '#A9BD93',
+            colorPrimaryHover: '#FFFDF6',
+            colorPrimaryActive: '#A9BD93',
+          },
+          Alert: {
+            colorSuccessBg: 'rgba(169, 189, 147, 0.1)',
+            colorSuccessBorder: '#A9BD93',
+          },
+        },
+      }}
+    >
+      {contextHolder}
+      <style jsx global>{`
+        .ant-btn-primary:hover:not(:disabled) {
+          border-color: #D97706 !important;
+          color: #D97706 !important;
+          background-color: #FFFFFF !important;
+        }
+      `}</style>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '100vh',
+        backgroundColor: '#FFFDF6',
+        padding: '2rem'
+      }}>
+        <Card 
+          style={{ 
+            width: 420, 
+            backgroundColor: '#FFFDF6',
+            border: '1px solid #A9BD93',
+            borderRadius: '12px',
+            boxShadow: '0 4px 16px rgba(169, 189, 147, 0.15)' 
+          }}
+          bodyStyle={{ padding: '2.5rem' }}
+        >
+          <Space direction="vertical" size="large" style={{ width: '100%' }}>
+            <div style={{ textAlign: 'center' }}>
+              <Title 
+                level={2} 
+                style={{ 
+                  marginBottom: '0.5rem',
+                  fontSize: '1.75rem',
+                  fontWeight: '600'
+                }}
               >
-                {loading ? 'Sending Magic Link...' : 'Send Magic Link'}
-              </Button>
-            </Form.Item>
-          </Form>
+                Welcome to Cliento
+              </Title>
+              <Text 
+                style={{ 
+                  fontSize: '1rem' 
+                }}
+              >
+                Sign in with your email to continue
+              </Text>
+            </div>
 
-          {message && (
-            <Alert
-              message={message}
-              type={messageType}
-              showIcon
-              closable
-              onClose={() => {
-                setMessage('');
-                setMessageType(undefined);
-              }}
-            />
-          )}
-        </Space>
-      </Card>
-    </div>
+            <Form
+              form={form}
+              name="login"
+              onFinish={handleLogin}
+              layout="vertical"
+              size="large"
+            >
+              <Form.Item
+                name="email"
+                label="Email Address"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter your email address',
+                  },
+                  {
+                    type: 'email',
+                    message: 'Please enter a valid email address',
+                  },
+                ]}
+              >
+                <Input
+                  prefix={<MailOutlined />}
+                  placeholder="Enter your email"
+                  autoComplete="email"
+                  style={{
+                    height: '44px',
+                    borderRadius: '8px',
+                  }}
+                />
+              </Form.Item>
+
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  block
+                  style={{
+                    height: '44px',
+                    borderRadius: '8px',
+                    fontWeight: '500',
+                    fontSize: '1rem',
+                  }}
+                >
+                  {loading ? 'Sending Magic Link...' : 'Send Magic Link'}
+                </Button>
+              </Form.Item>
+            </Form>
+          </Space>
+        </Card>
+      </div>
+    </ConfigProvider>
   );
 }

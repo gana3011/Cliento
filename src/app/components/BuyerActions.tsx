@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { Button, Col, Input, Row, Select } from 'antd'
+import { Button, Col, Input, Row, Select, ConfigProvider, message } from "antd";
 import type { Buyer as BuyerType } from "@prisma/client";
-import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
-import { useRouter } from 'next/navigation'
-import React, { useCallback, useState } from 'react'
-import ExportButton from './ExportButton';
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import React, { useCallback, useState } from "react";
+import ExportButton from "./ExportButton";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -29,9 +29,11 @@ interface BuyerActionsProps {
 }
 
 const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
-  const [searchValue, setSearchValue] = useState(filters.search || '');
+  const [searchValue, setSearchValue] = useState(filters.search || "");
   const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [isImporting, setIsImporting] = useState(false);
   const router = useRouter();
+  const [messageApi, contextHolder] = message.useMessage();
   const searchParams = useSearchParams();
 
   // Debounced search function
@@ -47,24 +49,27 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
     };
   };
 
-  const updateURL = useCallback((newParams: Record<string, string | undefined>) => {
-    const params = new URLSearchParams(searchParams.toString());
-    
-    Object.entries(newParams).forEach(([key, value]) => {
-      if (value && value !== '') {
-        params.set(key, value);
-      } else {
-        params.delete(key);
+  const updateURL = useCallback(
+    (newParams: Record<string, string | undefined>) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      Object.entries(newParams).forEach(([key, value]) => {
+        if (value && value !== "") {
+          params.set(key, value);
+        } else {
+          params.delete(key);
+        }
+      });
+
+      // Reset to page 1 when filters change (except when page is explicitly being updated)
+      if (!newParams.page) {
+        params.delete("page");
       }
-    });
 
-    // Reset to page 1 when filters change (except when page is explicitly being updated)
-    if (!newParams.page) {
-      params.delete('page');
-    }
-
-    router.push(`?${params.toString()}`);
-  }, [searchParams, router]);
+      router.push(`?${params.toString()}`);
+    },
+    [searchParams, router]
+  );
 
   const debouncedSearch = useCallback(
     debounce((searchTerm: string) => {
@@ -88,29 +93,50 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
   };
 
   const handleImport = async () => {
+    if (!csvFile) return;
+    
+    setIsImporting(true);
     try {
-      if (csvFile) {
-        const fd = new FormData();
-        fd.append("file", csvFile);
-        const res = await fetch("/api/buyers/import", {
-          method: "POST",
-          body: fd
-        });
-        const json = await res.json();
-        console.log(json);
-        
-        if (res.ok) {
-          setCsvFile(null);
-          const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-          if (fileInput) {
-            fileInput.value = '';
-          }
-          
-          router.refresh();
+      const fd = new FormData();
+      fd.append("file", csvFile);
+      const res = await fetch("/api/buyers/import", {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      console.log(data);
+      
+      if (data.ok) {
+        setCsvFile(null);
+        const fileInput = document.querySelector(
+          'input[type="file"]'
+        ) as HTMLInputElement;
+        if (fileInput) {
+          fileInput.value = "";
         }
+
+        messageApi.open({
+          type: 'success',
+          content: 'CSV imported successfully',
+        });
+
+        setTimeout(() => {
+          router.refresh();
+        }, 500);
+      } else {
+        messageApi.open({
+          type: 'error',
+          content: data.message,
+        });
       }
     } catch (error) {
       console.error(error);
+      messageApi.open({
+        type: 'error',
+        content: 'Failed to import CSV file',
+      });
+    } finally {
+      setIsImporting(false);
     }
   };
 
@@ -122,96 +148,203 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
   };
 
   return (
-    <div style={{ marginBottom: '1rem', background: '#f5f5f5', padding: '1rem', borderRadius: '8px' }}>
-        <Row gutter={16}>
-          <Col span={6}>
-            <Search
-              placeholder="Search by name, phone, or email"
-              value={searchValue}
-              onChange={handleSearchChange}
-              allowClear
-            />
-          </Col>
-          <Col span={4}>
-            <Select
-              placeholder="City"
-              style={{ width: '100%' }}
-              value={filters.city}
-              onChange={(value) => handleFilterChange('city', value)}
-              allowClear
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#A9BD93',
+          colorPrimaryHover: '#A9BD93',
+          colorPrimaryActive: '#A9BD93',
+        },
+        components: {
+          Input: {
+            hoverBorderColor: '#A9BD93',
+            activeBorderColor: '#A9BD93',
+          },
+          Select: {
+            hoverBorderColor: '#A9BD93',
+            activeBorderColor: '#A9BD93',
+            optionSelectedBg: '#A9BD93',
+            optionActiveBg: '#A9BD93',
+          },
+        },
+      }}
+    >
+      {contextHolder}
+      <div
+        style={{
+          marginBottom: "2rem",
+          background: "#FFFDF6",
+          padding: "1.5rem",
+          borderRadius: "12px",
+          border: "1px solid #A9BD93",
+          boxShadow: "0 2px 8px rgba(169, 189, 147, 0.1)",
+        }}
+      >
+      <Row gutter={16} style={{ marginBottom: "1rem" }}>
+        <Col span={6}>
+          <Search
+            placeholder="Search by name, phone, email, or notes"
+            value={searchValue}
+            onChange={handleSearchChange}
+            allowClear
+            style={{
+              borderRadius: "8px",
+            }}
+          />
+        </Col>
+        <Col span={4}>
+          <Select
+            placeholder="City"
+            style={{
+              width: "100%",
+              borderRadius: "8px",
+            }}
+            value={filters.city}
+            onChange={(value) => handleFilterChange("city", value)}
+            allowClear
+          >
+            {filterOptions.cities.map((city) => (
+              <Option key={city} value={city}>
+                {city}
+              </Option>
+            ))}
+          </Select>
+        </Col>
+        <Col span={4}>
+          <Select
+            placeholder="Property Type"
+            style={{
+              width: "100%",
+              borderRadius: "8px",
+            }}
+            value={filters.propertyType}
+            onChange={(value) => handleFilterChange("propertyType", value)}
+            allowClear
+          >
+            {filterOptions.propertyTypes.map((type) => (
+              <Option key={type} value={type}>
+                {type}
+              </Option>
+            ))}
+          </Select>
+        </Col>
+        <Col span={4}>
+          <Select
+            placeholder="Status"
+            style={{
+              width: "100%",
+              borderRadius: "8px",
+            }}
+            value={filters.status}
+            onChange={(value) => handleFilterChange("status", value)}
+            allowClear
+          >
+            {filterOptions.statuses.map((status) => (
+              <Option key={status} value={status}>
+                {status}
+              </Option>
+            ))}
+          </Select>
+        </Col>
+        <Col span={4}>
+          <Select
+            placeholder="Timeline"
+            style={{
+              width: "100%",
+              borderRadius: "8px",
+            }}
+            value={filters.timeline}
+            onChange={(value) => handleFilterChange("timeline", value)}
+            allowClear
+          >
+            {filterOptions.timelines.map((timeline) => (
+              <Option key={timeline} value={timeline}>
+                {timeline === "ZERO_3M"
+                  ? "0-3m"
+                  : timeline === "THREE_6M"
+                  ? "3-6m"
+                  : timeline === "GT_6M"
+                  ? ">6m"
+                  : timeline}
+              </Option>
+            ))}
+          </Select>
+        </Col>
+        <Col>
+          <Link href={"/buyers/new"}>
+            <Button
+              type="primary"
+              style={{
+                backgroundColor: "#A9BD93",
+                borderColor: "#A9BD93",
+                borderRadius: "8px",
+                fontWeight: "500",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "#D97706";
+                e.currentTarget.style.color = "#D97706";
+                e.currentTarget.style.backgroundColor = "#FFFFFF";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "#A9BD93";
+                e.currentTarget.style.color = "";
+                e.currentTarget.style.backgroundColor = "#A9BD93";
+              }}
             >
-              {filterOptions.cities.map(city => (
-                <Option key={city} value={city}>{city}</Option>
-              ))}
-            </Select>
-          </Col>
-          <Col span={4}>
-            <Select
-              placeholder="Property Type"
-              style={{ width: '100%' }}
-              value={filters.propertyType}
-              onChange={(value) => handleFilterChange('propertyType', value)}
-              allowClear
-            >
-              {filterOptions.propertyTypes.map(type => (
-                <Option key={type} value={type}>{type}</Option>
-              ))}
-            </Select>
-          </Col>
-          <Col span={4}>
-            <Select
-              placeholder="Status"
-              style={{ width: '100%' }}
-              value={filters.status}
-              onChange={(value) => handleFilterChange('status', value)}
-              allowClear
-            >
-              {filterOptions.statuses.map(status => (
-                <Option key={status} value={status}>{status}</Option>
-              ))}
-            </Select>
-          </Col>
-          <Col span={4}>
-            <Select
-              placeholder="Timeline"
-              style={{ width: '100%' }}
-              value={filters.timeline}
-              onChange={(value) => handleFilterChange('timeline', value)}
-              allowClear
-            >
-              {filterOptions.timelines.map(timeline => (
-                <Option key={timeline} value={timeline}>
-                  {timeline === 'ZERO_3M' ? '0-3m' : 
-                   timeline === 'THREE_6M' ? '3-6m' : 
-                   timeline === 'GT_6M' ? '>6m' : 
-                   timeline}
-                </Option>
-              ))}
-            </Select>
-          </Col>
-          <Col>
-           <Link href={'/buyers/new'}><Button type="primary">Add Buyer</Button></Link>
-          </Col>
-          </Row>
-          <Row gutter={16}>
-          <Col>
-            <input 
-              type="file" 
-              accept=".csv, text/csv" 
-              onChange={handleCsvChange}
-              style={{ marginBottom: '8px' }}
-            />
-            </Col>
-            <Col>
-            <Button onClick={handleImport} disabled={!csvFile}>
-              Import CSV
+              Add Buyer
             </Button>
-          </Col>
-          <Col>
-            <ExportButton filters={filters} />
-          </Col>
-          </Row>
-      </div>
+          </Link>
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col>
+          <input
+            type="file"
+            accept=".csv, text/csv"
+            onChange={handleCsvChange}
+            style={{
+              marginBottom: "8px",
+              padding: "5px",
+              borderRadius: "6px",
+              border: "1px solid #A9BD93",
+              backgroundColor: "#FFFDF6",
+            }}
+          />
+        </Col>
+        <Col>
+          <Button
+            onClick={handleImport}
+            disabled={!csvFile || isImporting}
+            loading={isImporting}
+            style={{
+              backgroundColor: csvFile && !isImporting ? "#A9BD93" : "#FFFFFF",
+              borderColor: "#A9BD93",
+              color: csvFile && !isImporting ? "white" : "#A9BD93",
+              borderRadius: "8px",
+              transition: "all 0.2s ease-in-out",
+            }}
+            onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "#D97706";
+                e.currentTarget.style.color = "#D97706";
+                e.currentTarget.style.backgroundColor = "#FFFFFF";
+            }}
+            onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "#A9BD93";
+                e.currentTarget.style.color = csvFile ? "white" : "#A9BD93";
+                e.currentTarget.style.backgroundColor = csvFile
+                  ? "#A9BD93"
+                  : "#FFFFFF"; 
+            }}
+          >
+            {isImporting ? 'Importing...' : 'Import CSV'}
+          </Button>
+        </Col>
+        <Col>
+          <ExportButton filters={filters} />
+        </Col>
+      </Row>
+    </div>
+    </ConfigProvider>
   );
 };
 

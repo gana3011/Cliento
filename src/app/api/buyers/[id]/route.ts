@@ -2,6 +2,17 @@ import { prisma } from "@/app/lib/prisma";
 import { supabaseServerClient } from "@/app/lib/supabase/supabaseServerClient";
 import { buyerBase } from "@/app/lib/validators/buyer";
 import { NextRequest, NextResponse } from "next/server";
+import { ZodError } from "zod";
+import { updateBuyerLimiter, getIdentifier } from "@/app/lib/rate-limiter";
+
+function formatZodErrors(error: ZodError): string {
+  return error.issues
+    .map((issue) => {
+      const path = issue.path.length > 0 ? `${issue.path.join('.')}: ` : '';
+      return `${path}${issue.message}`;
+    })
+    .join(', ');
+}
 
 export async function PUT(
   request: NextRequest,
@@ -14,8 +25,8 @@ export async function PUT(
   const parsed = buyerBase.safeParse(body);
 
   if (!parsed.success) {
-    console.log(parsed.error?.issues);
-    return NextResponse.json(parsed.error, { status: 400 });
+    const errorMessage = formatZodErrors(parsed.error);
+    return NextResponse.json({ ok: false, message: errorMessage }, { status: 400 });
   }
 
   const data = parsed.data;
@@ -26,20 +37,44 @@ export async function PUT(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    return NextResponse.json({ ok: false, message: "Not authenticated" }, { status: 401 });
+  }
+
+  // **RATE LIMITING CALL**
+  const identifier = getIdentifier(request, user.id);
+  const { success, limit, remaining, reset } = await updateBuyerLimiter.limit(identifier);
+  
+  if (!success) {
+    return NextResponse.json(
+      { 
+        ok: false, 
+        message: `Rate limit exceeded. You can update ${limit} buyers per minute. Try again later.` 
+      },
+      { 
+        status: 429,
+        headers: {
+          'X-RateLimit-Limit': limit.toString(),
+          'X-RateLimit-Remaining': remaining.toString(),
+          'X-RateLimit-Reset': new Date(reset).toISOString(),
+        }
+      }
+    );
   }
 
   const existingBuyer = await prisma.buyer.findUnique({ where: { id } });
   if (!existingBuyer)
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json({ ok: false, message: "Not found" }, { status: 404 });
 
   if (existingBuyer.ownerId != user.id)
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ ok: false, message: "Forbidden" }, { status: 403 });
 
   const clientUpdatedAt = data.updatedAt ? new Date(data.updatedAt) : null;
   if (!clientUpdatedAt)
     return NextResponse.json(
-      { message: "Missing updatedAt for concurrency check" },
+      { 
+        ok: false, 
+        message: "Missing updatedAt for concurrency check" 
+      },
       { status: 400 }
     );
 
@@ -100,11 +135,11 @@ export async function PUT(
 
       return { updatedBuyer, history };
     });
-    return NextResponse.json({ buyer: result.updatedBuyer }, { status: 200 });
+    return NextResponse.json({ ok: true, buyer: result.updatedBuyer }, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { message: "Internal server error" },
+      { ok: false, message: "Internal server error" },
       { status: 500 }
     );
   }
