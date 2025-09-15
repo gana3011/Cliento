@@ -6,7 +6,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useState } from "react";
-import ExportButton from "./ExportButton";
+import ExportButton from "../ExportButton";
+import styles from "./BuyerActions.module.css";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -170,35 +171,21 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
       }}
     >
       {contextHolder}
-      <div
-        style={{
-          marginBottom: "2rem",
-          background: "#FFFDF6",
-          padding: "1.5rem",
-          borderRadius: "12px",
-          border: "1px solid #A9BD93",
-          boxShadow: "0 2px 8px rgba(169, 189, 147, 0.1)",
-        }}
-      >
-      <Row gutter={16} style={{ marginBottom: "1rem" }}>
+      <div className={styles.container}>
+      <Row gutter={16} className={styles.filtersRow}>
         <Col span={6}>
           <Search
             placeholder="Search by name, phone, email, or notes"
             value={searchValue}
             onChange={handleSearchChange}
             allowClear
-            style={{
-              borderRadius: "8px",
-            }}
+            className={styles.searchInput}
           />
         </Col>
         <Col span={4}>
           <Select
             placeholder="City"
-            style={{
-              width: "100%",
-              borderRadius: "8px",
-            }}
+            className={styles.filterSelect}
             value={filters.city}
             onChange={(value) => handleFilterChange("city", value)}
             allowClear
@@ -213,10 +200,7 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
         <Col span={4}>
           <Select
             placeholder="Property Type"
-            style={{
-              width: "100%",
-              borderRadius: "8px",
-            }}
+            className={styles.filterSelect}
             value={filters.propertyType}
             onChange={(value) => handleFilterChange("propertyType", value)}
             allowClear
@@ -231,10 +215,7 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
         <Col span={4}>
           <Select
             placeholder="Status"
-            style={{
-              width: "100%",
-              borderRadius: "8px",
-            }}
+            className={styles.filterSelect}
             value={filters.status}
             onChange={(value) => handleFilterChange("status", value)}
             allowClear
@@ -249,10 +230,7 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
         <Col span={4}>
           <Select
             placeholder="Timeline"
-            style={{
-              width: "100%",
-              borderRadius: "8px",
-            }}
+            className={styles.filterSelect}
             value={filters.timeline}
             onChange={(value) => handleFilterChange("timeline", value)}
             allowClear
@@ -274,22 +252,7 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
           <Link href={"/buyers/new"}>
             <Button
               type="primary"
-              style={{
-                backgroundColor: "#A9BD93",
-                borderColor: "#A9BD93",
-                borderRadius: "8px",
-                fontWeight: "500",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#D97706";
-                e.currentTarget.style.color = "#D97706";
-                e.currentTarget.style.backgroundColor = "#FFFFFF";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "#A9BD93";
-                e.currentTarget.style.color = "";
-                e.currentTarget.style.backgroundColor = "#A9BD93";
-              }}
+              className={styles.addButton}
             >
               Add Buyer
             </Button>
@@ -302,13 +265,7 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
             type="file"
             accept=".csv, text/csv"
             onChange={handleCsvChange}
-            style={{
-              marginBottom: "8px",
-              padding: "5px",
-              borderRadius: "6px",
-              border: "1px solid #A9BD93",
-              backgroundColor: "#FFFDF6",
-            }}
+            className={styles.fileInput}
           />
         </Col>
         <Col>
@@ -316,25 +273,7 @@ const BuyerActions = ({ filters, filterOptions }: BuyerActionsProps) => {
             onClick={handleImport}
             disabled={!csvFile || isImporting}
             loading={isImporting}
-            style={{
-              backgroundColor: csvFile && !isImporting ? "#A9BD93" : "#FFFFFF",
-              borderColor: "#A9BD93",
-              color: csvFile && !isImporting ? "white" : "#A9BD93",
-              borderRadius: "8px",
-              transition: "all 0.2s ease-in-out",
-            }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#D97706";
-                e.currentTarget.style.color = "#D97706";
-                e.currentTarget.style.backgroundColor = "#FFFFFF";
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "#A9BD93";
-                e.currentTarget.style.color = csvFile ? "white" : "#A9BD93";
-                e.currentTarget.style.backgroundColor = csvFile
-                  ? "#A9BD93"
-                  : "#FFFFFF"; 
-            }}
+            className={`${styles.importButton} ${csvFile && !isImporting ? styles.importButtonActive : styles.importButtonInactive}`}
           >
             {isImporting ? 'Importing...' : 'Import CSV'}
           </Button>
