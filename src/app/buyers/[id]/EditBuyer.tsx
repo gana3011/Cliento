@@ -7,7 +7,6 @@ import { Form } from "antd";
 import BuyerForm from "@/app/components/BuyerForm";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
-import NavBar from "@/app/components/NavBar";
 
 type Props = {
   buyer: Buyer;

@@ -1,7 +1,6 @@
 'use client';
 
 import BuyerForm from '@/app/components/BuyerForm'
-import NavBar from '@/app/components/NavBar';
 import { useForm } from 'antd/es/form/Form'
 import React from 'react'
 
