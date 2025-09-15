@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma db push && next build",
+    "build": "prisma generate && next build",
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint",
@@ -13,6 +13,7 @@
     "test:coverage": "jest --coverage",
     "db:migrate": "prisma migrate deploy",
     "db:generate": "prisma generate",
+    "db:push": "prisma db push",
     "db:seed": "ts-node prisma/seed.ts",
     "db:studio": "prisma studio"
   },
