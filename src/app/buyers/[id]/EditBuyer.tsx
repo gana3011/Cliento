@@ -3,7 +3,7 @@
 import React from "react";
 import type { Buyer } from "@prisma/client";
 import type { BuyerHistory as History } from "@prisma/client";
-import { Form } from "antd";
+import { Form, message } from "antd";
 import BuyerForm from "@/app/components/BuyerForm";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
@@ -23,6 +23,8 @@ const EditBuyer = ({ buyer, history }: Props) => {
 
   const router = useRouter();
 
+  const [messageApi, contextHolder] = message.useMessage();
+
   const handleSubmit = async (values: BuyerFormValues) => {
 
     try{
@@ -33,19 +35,29 @@ const EditBuyer = ({ buyer, history }: Props) => {
         body: JSON.stringify(values),
       });
 
+      const data = await res.json();
+
       if (res.status === 409) {
         const payload = await res.json();
         console.log("server current record:", payload?.current);
         return;
       }
 
-      if(!res.ok){
-        const err = await res.json();
-        console.error(err);
+      if(!data.ok){
+        messageApi.open({
+            type: 'error',
+            content: data.message || 'Failed to update buyer',
+          });
         return;
       }
 
-      const data = await res.json();
+      else{
+        messageApi.open({
+          type: 'success',
+          content: data.message || 'Updated successfully'
+        });
+      }
+
       if (data.buyer?.updatedAt) {
         form.setFieldValue("updatedAt", new Date(data.buyer.updatedAt).toISOString());
       }
@@ -57,6 +69,7 @@ const EditBuyer = ({ buyer, history }: Props) => {
   
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#FFFDF6' }}>
+      {contextHolder}
       <div 
         style={{
           maxWidth: '1200px',

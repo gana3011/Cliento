@@ -37,10 +37,6 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
     try {
       if(onSubmit){
         await onSubmit(values);
-        messageApi.open({
-          type: 'success',
-          content: 'Buyer updated successfully!',
-        });
       }
       else{
         const res = await fetch("/api/buyers/new", {
@@ -52,7 +48,6 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
         });
         
         const data = await res.json();
-        console.log(data);
         
         if(!data.ok){
           messageApi.open({

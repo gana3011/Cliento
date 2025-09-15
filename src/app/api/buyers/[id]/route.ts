@@ -67,7 +67,7 @@ export async function PUT(
     return NextResponse.json({ ok: false, message: "Not found" }, { status: 404 });
 
   if (existingBuyer.ownerId != user.id)
-    return NextResponse.json({ ok: false, message: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ ok: false, message: "You don't have access to edit this" }, { status: 403 });
 
   const clientUpdatedAt = data.updatedAt ? new Date(data.updatedAt) : null;
   if (!clientUpdatedAt)
