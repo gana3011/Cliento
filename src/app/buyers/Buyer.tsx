@@ -5,10 +5,11 @@ import { supabase } from '../lib/supabase/supabaseClient';
 import { User } from '@supabase/supabase-js';
 import { Input, Select, Row, Col, Space, Button } from 'antd';
 import BuyerTable from '../components/BuyerTable';
-import BuyerActions from '../components/BuyerActions';
+
 import type { Buyer as BuyerType } from "@prisma/client";
 import Link from 'next/link';
 import NavBar from '../components/NavBar';
+import BuyerActions from '../components/BuyerActions';
 
 interface BuyerProps {
   data: BuyerType[];

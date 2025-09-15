@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Select, InputNumber, Row, Col, ConfigProvider, message } from "antd";
 import { usePathname, useRouter } from "next/navigation";
+import styles from "./BuyerForm.module.css";
 
 const { Option } = Select;
 
@@ -80,6 +81,7 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
       setIsLoading(false);
     }
   };
+   
 
   return (
     <ConfigProvider
@@ -88,6 +90,7 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
           colorPrimary: '#A9BD93',
           colorPrimaryHover: '#A9BD93',
           colorPrimaryActive: '#A9BD93',
+          colorLink: '#A9BD93',
         },
         components: {
           Input: {
@@ -112,21 +115,16 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
       }}
     >
       {contextHolder}
-      <style jsx global>{`
-        .ant-btn-primary:hover:not(:disabled) {
-          border-color: #D97706 !important;
-          color: #D97706 !important;
-          background-color: #FFFFFF !important;
-        }
-      `}</style>
       
-      <Form 
-        layout="vertical" 
-        form={form} 
-        onFinish={onFinish} 
-        initialValues={initialValues}
-      >
-      <Row gutter={16}>
+      <div className={styles.container}>
+        <Form 
+          layout="vertical" 
+          form={form} 
+          onFinish={onFinish} 
+          initialValues={initialValues}
+          className={styles.formLayout}
+        >
+          <Row gutter={16}>
         {/* Left Column */}
         <Col span={12}>
           <Form.Item
@@ -212,7 +210,7 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
 
           <Form.Item name="timeline" label="Timeline" rules={[{ required: true, message: "Please select timeline!" }]}>
             <Select placeholder="Select timeline">
-              <Option value="ZERO-3m">0-3 months</Option>
+              <Option value="ZERO_3m">0-3 months</Option>
               <Option value="THREE_6M">3-6 months</Option>
               <Option value="GT_6M">6+ months</Option>
               <Option value="Exploring">Exploring</Option>
@@ -277,33 +275,27 @@ const BuyerForm = ( {form, initialValues, onSubmit } : BuyerFormProps) => {
         </Col>
       </Row>
 
-      <Form.Item name="notes" label="Notes">
-        <Input.TextArea rows={3} placeholder="Additional notes" />
-      </Form.Item>
+          <Form.Item name="notes" label="Notes">
+            <Input.TextArea rows={3} placeholder="Additional notes" className={styles.notesTextArea} />
+          </Form.Item>
 
-      <Form.Item name="updatedAt" hidden>
-          <Input type="hidden" />
-        </Form.Item>
+          <Form.Item name="updatedAt" hidden>
+              <Input type="hidden" />
+          </Form.Item>
 
-      <Form.Item>
-        <Button 
-          type="primary" 
-          htmlType="submit"
-          loading={isLoading}
-          disabled={isLoading}
-          style={{
-
-            borderColor: isLoading ? '#9CA3AF' : '#A9BD93',
-            fontWeight: '500',
-            height: '40px',
-            borderRadius: '8px',
-            cursor: isLoading ? 'not-allowed' : 'pointer'
-          }}
-        >
-          {isLoading ? 'Submitting...' : 'Submit'}
-        </Button>
-      </Form.Item>
-    </Form>
+          <Form.Item>
+            <Button 
+              type="primary" 
+              htmlType="submit"
+              loading={isLoading}
+              disabled={isLoading}
+              className={`${styles.submitButton} ${isLoading ? styles.submitButtonLoading : ''}`}
+            >
+              {isLoading ? 'Submitting...' : 'Submit'}
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </ConfigProvider>
   );
 };

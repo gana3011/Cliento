@@ -1,0 +1,94 @@
+/* BuyerTable.module.css */
+
+.tableContainer {
+  background: #FFFDF6;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid #A9BD93;
+  box-shadow: 0 2px 8px rgba(169, 189, 147, 0.1);
+}
+
+.table {
+  background-color: #FFFDF6;
+}
+
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.statusBadgeActive {
+  background-color: rgba(217, 119, 6, 0.1);
+  color: #D97706;
+  border: 1px solid rgba(217, 119, 6, 0.3);
+}
+
+.statusBadgeDropped {
+  background-color: #f0f0f0;
+  color: #666;
+  border: 1px solid #ccc;
+}
+
+.actionLink {
+  color: #D97706;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background-color: rgba(217, 119, 6, 0.1);
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+.actionLink:hover {
+  background-color: rgba(217, 119, 6, 0.2);
+  color: #D97706;
+  text-decoration: none;
+}
+
+/* Global table styles */
+:global(.table-row-light td) {
+  background-color: #FFFDF6 !important;
+}
+
+:global(.table-row-dark td) {
+  background-color: #ffffff !important;
+}
+
+:global(.ant-table-thead > tr > th) {
+  background-color: #A9BD93 !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-bottom: 2px solid #8fa876 !important;
+}
+
+:global(.ant-table-tbody > tr:hover > td) {
+  background-color: rgba(169, 189, 147, 0.1) !important;
+}
+
+:global(.ant-pagination-item-active) {
+  border-color: #A9BD93 !important;
+  background-color: #A9BD93 !important;
+}
+
+:global(.ant-pagination-item-active a) {
+  color: white !important;
+}
+
+:global(.ant-pagination-item:hover) {
+  border-color: #A9BD93 !important;
+}
+
+:global(.ant-pagination-item:hover a) {
+  color: #A9BD93 !important;
+}
+
+:global(.ant-pagination-next:hover .ant-pagination-item-link),
+:global(.ant-pagination-prev:hover .ant-pagination-item-link) {
+  border-color: #A9BD93 !important;
+  color: #A9BD93 !important;
+}
