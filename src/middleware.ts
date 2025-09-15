@@ -33,12 +33,9 @@ export async function middleware(request: NextRequest) {
 
   const pathName = request.nextUrl.pathname;
 
-  // Redirect root to buyers if authenticated
-  if (pathName === "/") {
-    if (user) {
-      return NextResponse.redirect(`${request.nextUrl.origin}/buyers`);
-    }
-    return NextResponse.redirect(`${request.nextUrl.origin}/login`);
+  // Redirect authenticated users from root to buyers dashboard
+  if (pathName === "/" && user) {
+    return NextResponse.redirect(`${request.nextUrl.origin}/buyers`);
   }
 
   // Protect /buyers routes
