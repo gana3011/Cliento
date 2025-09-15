@@ -4,6 +4,7 @@ import { buyerBase } from "@/app/lib/validators/buyer";
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { updateBuyerLimiter, getIdentifier } from "@/app/lib/rate-limiter";
+import type { Prisma } from "@prisma/client";
 
 function formatZodErrors(error: ZodError): string {
   return error.issues
@@ -66,7 +67,7 @@ export async function PUT(
     return NextResponse.json({ ok: false, message: "Not found" }, { status: 404 });
 
   if (existingBuyer.ownerId != user.id)
-    return NextResponse.json({ ok: false, message: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ ok: false, message: "You don't have access to edit this" }, { status: 403 });
 
   const clientUpdatedAt = data.updatedAt ? new Date(data.updatedAt) : null;
   if (!clientUpdatedAt)
@@ -89,7 +90,8 @@ export async function PUT(
       { status: 409 }
     );
 
-  const fields: Array<keyof typeof data> = [
+  type BuyerField = keyof typeof data;
+  const fields: BuyerField[] = [
     "fullName",
     "email",
     "phone",
@@ -104,18 +106,21 @@ export async function PUT(
     "notes",
     "tags",
     "status",
-  ] as any;
+  ];
 
-  const diff: Record<string, { before: any; after: any }> = {};
+  const diff: Prisma.JsonObject = {};
   for (const key of fields) {
-    // @ts-ignore
-    const before = (existingBuyer as any)[key];
-    // @ts-ignore
-    const after = (data as any)[key];
+    const before = existingBuyer[key];
+    const after = data[key];
 
     const same =
       JSON.stringify(before ?? null) === JSON.stringify(after ?? null);
-    if (!same) diff[key] = { before, after };
+    if (!same) {
+      // Serialize values to ensure JSON compatibility
+      const beforeValue = before instanceof Date ? before.toISOString() : before;
+      const afterValue = after instanceof Date ? after.toISOString() : after;
+      diff[key] = { before: beforeValue, after: afterValue };
+    }
   }
 
   try {

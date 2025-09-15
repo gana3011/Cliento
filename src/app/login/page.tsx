@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Form, Input, Button, Card, Typography, Alert, Space, ConfigProvider, message } from 'antd';
+import { Form, Input, Button, Card, Typography, Space, ConfigProvider, message } from 'antd';
 import { MailOutlined } from '@ant-design/icons';
 import { supabase } from '../lib/supabase/supabaseClient';
 
@@ -12,7 +12,6 @@ interface LoginFormValues {
 }
 
 export default function LoginPage() {
-  const [messageType, setMessageType] = useState<'success' | 'error' | undefined>();
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   
@@ -94,7 +93,7 @@ export default function LoginPage() {
             borderRadius: '12px',
             boxShadow: '0 4px 16px rgba(169, 189, 147, 0.15)' 
           }}
-          bodyStyle={{ padding: '2.5rem' }}
+          styles={{ body: { padding: '2.5rem' } }}
         >
           <Space direction="vertical" size="large" style={{ width: '100%' }}>
             <div style={{ textAlign: 'center' }}>

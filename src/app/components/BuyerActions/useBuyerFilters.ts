@@ -1,22 +1,25 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+
+// Move debounce function outside component to avoid recreation
+const debounce = <T extends unknown[]>(
+  func: (...args: T) => void, 
+  wait: number
+) => {
+  let timeout: NodeJS.Timeout;
+  return function executedFunction(...args: T) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
 
 export const useBuyerFilters = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  // Debounced search function
-  const debounce = (func: Function, wait: number) => {
-    let timeout: NodeJS.Timeout;
-    return function executedFunction(...args: any[]) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  };
 
   const updateURL = useCallback(
     (newParams: Record<string, string | undefined>) => {
@@ -40,8 +43,8 @@ export const useBuyerFilters = () => {
     [searchParams, router]
   );
 
-  const debouncedSearch = useCallback(
-    debounce((searchTerm: string) => {
+  const debouncedSearch = useMemo(
+    () => debounce((searchTerm: string) => {
       updateURL({ search: searchTerm });
     }, 500),
     [updateURL]
