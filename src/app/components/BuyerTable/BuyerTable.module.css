@@ -51,44 +51,44 @@
 }
 
 /* Global table styles */
-:global(.table-row-light td) {
+.tableContainer :global(.table-row-light td) {
   background-color: #FFFDF6 !important;
 }
 
-:global(.table-row-dark td) {
+.tableContainer :global(.table-row-dark td) {
   background-color: #ffffff !important;
 }
 
-:global(.ant-table-thead > tr > th) {
+.tableContainer :global(.ant-table-thead > tr > th) {
   background-color: #A9BD93 !important;
   color: white !important;
   font-weight: 600 !important;
   border-bottom: 2px solid #8fa876 !important;
 }
 
-:global(.ant-table-tbody > tr:hover > td) {
+.tableContainer :global(.ant-table-tbody > tr:hover > td) {
   background-color: rgba(169, 189, 147, 0.1) !important;
 }
 
-:global(.ant-pagination-item-active) {
+.tableContainer :global(.ant-pagination-item-active) {
   border-color: #A9BD93 !important;
   background-color: #A9BD93 !important;
 }
 
-:global(.ant-pagination-item-active a) {
+.tableContainer :global(.ant-pagination-item-active a) {
   color: white !important;
 }
 
-:global(.ant-pagination-item:hover) {
+.tableContainer :global(.ant-pagination-item:hover) {
   border-color: #A9BD93 !important;
 }
 
-:global(.ant-pagination-item:hover a) {
+.tableContainer :global(.ant-pagination-item:hover a) {
   color: #A9BD93 !important;
 }
 
-:global(.ant-pagination-next:hover .ant-pagination-item-link),
-:global(.ant-pagination-prev:hover .ant-pagination-item-link) {
+.tableContainer :global(.ant-pagination-next:hover .ant-pagination-item-link),
+.tableContainer :global(.ant-pagination-prev:hover .ant-pagination-item-link) {
   border-color: #A9BD93 !important;
   color: #A9BD93 !important;
 }

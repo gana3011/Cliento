@@ -62,7 +62,7 @@
 }
 
 /* Override Ant Design global styles */
-:global(.ant-btn-primary:hover:not(:disabled)) {
+.container :global(.ant-btn-primary:hover:not(:disabled)) {
   border-color: #D97706 !important;
   color: #D97706 !important;
   background-color: #FFFFFF !important;
